@@ -20,9 +20,10 @@ const STORE_CONFIG = {
 let selectedGovernorate = '';
 
 function getShippingCost(governorate, subtotal) {
-  if (subtotal === 0) return 0;
-  if (subtotal >= STORE_CONFIG.FREE_SHIPPING_MIN) return 0;
   if (!governorate) return null;
+  const numSubtotal = Number(subtotal) || 0;
+  // الشحن المجاني يسري فقط إذا كان إجمالي المنتجات 1500 ج.م فأكثر
+  if (numSubtotal >= STORE_CONFIG.FREE_SHIPPING_MIN) return 0;
   const gov = String(governorate).trim();
   const isCairoOrGiza = ['القاهرة', 'الجيزة', 'Cairo', 'Giza'].some(g => gov.includes(g));
   return isCairoOrGiza ? STORE_CONFIG.SHIPPING_CAIRO_GIZA : STORE_CONFIG.SHIPPING_OTHER_GOVS;
@@ -30,6 +31,15 @@ function getShippingCost(governorate, subtotal) {
 
 function onGovernorateChange(val) {
   selectedGovernorate = val || '';
+  // مزامنة القائمتين (في السلة وفي نافذة الدفع)
+  const cartSelect = getElem('cartGovernorateSelect');
+  if (cartSelect && cartSelect.value !== selectedGovernorate) {
+    cartSelect.value = selectedGovernorate;
+  }
+  const modalSelect = getElem('governorateSelect');
+  if (modalSelect && modalSelect.value !== selectedGovernorate) {
+    modalSelect.value = selectedGovernorate;
+  }
   calculateTotals();
 }
 
@@ -620,23 +630,29 @@ function calculateTotals() {
   const shippingCost = getShippingCost(selectedGovernorate, subtotal);
   const effectiveShipping = shippingCost !== null ? shippingCost : 0;
   const finalTotal = Math.max(0, subtotal - discountAmount) + effectiveShipping;
-  const pendingShipping = shippingCost === null && subtotal > 0 && subtotal < STORE_CONFIG.FREE_SHIPPING_MIN;
 
+  // 1. تحديث ملخص السلة
   const sumSubtotalEl = getElem('sumSubtotal');
   if (sumSubtotalEl) sumSubtotalEl.textContent = formatEGP(subtotal);
 
   const sumShippingEl = getElem('sumShipping');
   if (sumShippingEl) {
-    if (subtotal >= STORE_CONFIG.FREE_SHIPPING_MIN) sumShippingEl.textContent = tr('مجاني 🎉', 'Free 🎉');
-    else if (shippingCost === null) sumShippingEl.textContent = tr('يُحسب بعد اختيار المحافظة', 'Calculated after selecting governorate');
-    else sumShippingEl.textContent = formatEGP(shippingCost);
+    if (subtotal >= STORE_CONFIG.FREE_SHIPPING_MIN && subtotal > 0) {
+      sumShippingEl.textContent = tr('مجاني 🎉', 'Free 🎉');
+    } else if (shippingCost === null) {
+      sumShippingEl.textContent = tr('اختر المحافظة', 'Select governorate');
+    } else {
+      sumShippingEl.textContent = formatEGP(shippingCost);
+    }
   }
 
   const sumTotalEl = getElem('sumTotal');
   if (sumTotalEl) {
-    sumTotalEl.textContent = pendingShipping
-      ? formatEGP(Math.max(0, subtotal - discountAmount)) + ' + ' + tr('الشحن', 'Shipping')
-      : formatEGP(finalTotal);
+    if (shippingCost === null && subtotal > 0 && subtotal < STORE_CONFIG.FREE_SHIPPING_MIN) {
+      sumTotalEl.textContent = formatEGP(Math.max(0, subtotal - discountAmount)) + ' + ' + tr('الشحن', 'Shipping');
+    } else {
+      sumTotalEl.textContent = formatEGP(finalTotal);
+    }
   }
 
   const discountLine = getElem('discountLine');
@@ -649,6 +665,7 @@ function calculateTotals() {
     }
   }
 
+  // 2. تحديث ملخص نافذة الدفع (Checkout Modal)
   const chkSubtotal = getElem('checkoutSubtotal');
   if (chkSubtotal) chkSubtotal.textContent = formatEGP(subtotal);
 
@@ -665,16 +682,22 @@ function calculateTotals() {
 
   const chkShipping = getElem('checkoutShipping');
   if (chkShipping) {
-    if (subtotal >= STORE_CONFIG.FREE_SHIPPING_MIN) chkShipping.textContent = tr('مجاني 🎉', 'Free 🎉');
-    else if (shippingCost === null) chkShipping.textContent = tr('اختر المحافظة لتحديد الشحن', 'Select governorate to see shipping');
-    else chkShipping.textContent = formatEGP(shippingCost);
+    if (subtotal >= STORE_CONFIG.FREE_SHIPPING_MIN && subtotal > 0) {
+      chkShipping.textContent = tr('مجاني 🎉', 'Free 🎉');
+    } else if (shippingCost === null) {
+      chkShipping.textContent = tr('اختر المحافظة', 'Select governorate');
+    } else {
+      chkShipping.textContent = formatEGP(shippingCost);
+    }
   }
 
   const chkTotal = getElem('checkoutTotal');
   if (chkTotal) {
-    chkTotal.textContent = pendingShipping
-      ? formatEGP(Math.max(0, subtotal - discountAmount)) + ' + ' + tr('الشحن', 'Shipping')
-      : formatEGP(finalTotal);
+    if (shippingCost === null && subtotal > 0 && subtotal < STORE_CONFIG.FREE_SHIPPING_MIN) {
+      chkTotal.textContent = formatEGP(Math.max(0, subtotal - discountAmount)) + ' + ' + tr('الشحن', 'Shipping');
+    } else {
+      chkTotal.textContent = formatEGP(finalTotal);
+    }
   }
 
   window.CURRENT_ORDER_TOTALS = {
@@ -777,8 +800,10 @@ function openCheckout() {
     showToast(tr('سلة التسوق فارغة', 'Cart is empty'));
     return;
   }
-  const govSelect = getElem('governorateSelect');
-  if (govSelect && govSelect.value) selectedGovernorate = govSelect.value;
+  const modalSelect = getElem('governorateSelect');
+  if (modalSelect && selectedGovernorate) {
+    modalSelect.value = selectedGovernorate;
+  }
   calculateTotals();
   closeCart();
   openModal('checkoutModal');
@@ -793,10 +818,10 @@ async function submitOrder(e) {
   else btn.textContent = tr('جاري تسجيل الطلب...', 'Saving order...');
 
   const form = new FormData(e.target);
-  const governorate = (form.get('governorate') || '').trim();
+  const governorate = (form.get('governorate') || selectedGovernorate || '').trim();
 
   if (!governorate) {
-    showToast(tr('يرجى اختيار المحافظة أولاً لحساب الشحن', 'Please select a governorate first'));
+    showToast(tr('يرجى اختيار المحافظة لحساب تكلفة الشحن', 'Please select your governorate to calculate shipping'));
     btn.disabled = false;
     if (submitLabel) submitLabel.textContent = tr('تأكيد الطلب الآن', 'Confirm order');
     else btn.textContent = tr('تأكيد الطلب الآن', 'Confirm order');
@@ -827,9 +852,9 @@ async function submitOrder(e) {
     customer_phone: form.get('customer_phone'),
     customer_email: form.get('customer_email') || null,
     governorate: form.get('governorate'),
-    city: form.get('city'),
-    area: form.get('area'),
-    address_line: form.get('address_line'),
+    city: form.get('city') || form.get('governorate') || '',
+    area: form.get('area') || '',
+    address_line: form.get('address_line') || form.get('address_line1') || '',
     building_number: form.get('building_number') || null,
     apartment_number: form.get('apartment_number') || null,
     floor_number: form.get('floor_number') || null,
