@@ -1,3 +1,4 @@
+
 /* ==========================================================
    MCL STORE - LOGIC & SUPABASE INTEGRATION
    ========================================================== */
@@ -10,10 +11,27 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLI
 
 // 2. إعدادات المتجر العامة
 const STORE_CONFIG = {
-  SHIPPING_FEE: 70,              // مصاريف الشحن الافتراضية بالجنيه
+  SHIPPING_CAIRO_GIZA: 125,      // مصاريف الشحن داخل القاهرة والجيزة بالجنيه
+  SHIPPING_OTHER_GOVS: 135,      // مصاريف الشحن لبقية المحافظات بالجنيه
   FREE_SHIPPING_MIN: 1500,       // شحن مجاني إذا تعدى هذا المبلغ
   LOW_STOCK_LIMIT: 5             // حد التنبيه بانخفاض المخزون
 };
+
+let selectedGovernorate = '';
+
+function getShippingCost(governorate, subtotal) {
+  if (subtotal === 0) return 0;
+  if (subtotal >= STORE_CONFIG.FREE_SHIPPING_MIN) return 0;
+  if (!governorate) return null;
+  const gov = String(governorate).trim();
+  const isCairoOrGiza = ['القاهرة', 'الجيزة', 'Cairo', 'Giza'].some(g => gov.includes(g));
+  return isCairoOrGiza ? STORE_CONFIG.SHIPPING_CAIRO_GIZA : STORE_CONFIG.SHIPPING_OTHER_GOVS;
+}
+
+function onGovernorateChange(val) {
+  selectedGovernorate = val || '';
+  calculateTotals();
+}
 
 const MCL_FALLBACK_IMAGES = {
   blackTee: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%231a1a1a'/%3E%3Cpath d='M150 160h100v80H150z' fill='%23333333'/%3E%3Ctext x='200' y='210' fill='%23777777' font-size='18' text-anchor='middle' font-family='sans-serif'%3EMCL STORE%3C/text%3E%3C/svg%3E",
@@ -599,25 +617,71 @@ function calculateTotals() {
     }
   }
 
-  const shipping = subtotal >= STORE_CONFIG.FREE_SHIPPING_MIN || subtotal === 0 ? 0 : STORE_CONFIG.SHIPPING_FEE;
-  const finalTotal = Math.max(0, subtotal - discountAmount) + shipping;
+  const shippingCost = getShippingCost(selectedGovernorate, subtotal);
+  const effectiveShipping = shippingCost !== null ? shippingCost : 0;
+  const finalTotal = Math.max(0, subtotal - discountAmount) + effectiveShipping;
+  const pendingShipping = shippingCost === null && subtotal > 0 && subtotal < STORE_CONFIG.FREE_SHIPPING_MIN;
 
-  getElem('sumSubtotal').textContent = formatEGP(subtotal);
-  getElem('sumShipping').textContent = shipping === 0 ? 'مجاني 🎉' : formatEGP(shipping);
-  getElem('sumTotal').textContent = formatEGP(finalTotal);
+  const sumSubtotalEl = getElem('sumSubtotal');
+  if (sumSubtotalEl) sumSubtotalEl.textContent = formatEGP(subtotal);
+
+  const sumShippingEl = getElem('sumShipping');
+  if (sumShippingEl) {
+    if (subtotal >= STORE_CONFIG.FREE_SHIPPING_MIN) sumShippingEl.textContent = tr('مجاني 🎉', 'Free 🎉');
+    else if (shippingCost === null) sumShippingEl.textContent = tr('يُحسب بعد اختيار المحافظة', 'Calculated after selecting governorate');
+    else sumShippingEl.textContent = formatEGP(shippingCost);
+  }
+
+  const sumTotalEl = getElem('sumTotal');
+  if (sumTotalEl) {
+    sumTotalEl.textContent = pendingShipping
+      ? formatEGP(Math.max(0, subtotal - discountAmount)) + ' + ' + tr('الشحن', 'Shipping')
+      : formatEGP(finalTotal);
+  }
 
   const discountLine = getElem('discountLine');
-  if (discountAmount > 0) {
-    discountLine.style.display = 'flex';
-    getElem('sumDiscount').textContent = `- ${formatEGP(discountAmount)}`;
-  } else {
-    discountLine.style.display = 'none';
+  if (discountLine) {
+    if (discountAmount > 0) {
+      discountLine.style.display = 'flex';
+      getElem('sumDiscount').textContent = `- ${formatEGP(discountAmount)}`;
+    } else {
+      discountLine.style.display = 'none';
+    }
+  }
+
+  const chkSubtotal = getElem('checkoutSubtotal');
+  if (chkSubtotal) chkSubtotal.textContent = formatEGP(subtotal);
+
+  const chkDiscountLine = getElem('checkoutDiscountLine');
+  const chkDiscount = getElem('checkoutDiscount');
+  if (chkDiscountLine && chkDiscount) {
+    if (discountAmount > 0) {
+      chkDiscountLine.style.display = 'flex';
+      chkDiscount.textContent = `- ${formatEGP(discountAmount)}`;
+    } else {
+      chkDiscountLine.style.display = 'none';
+    }
+  }
+
+  const chkShipping = getElem('checkoutShipping');
+  if (chkShipping) {
+    if (subtotal >= STORE_CONFIG.FREE_SHIPPING_MIN) chkShipping.textContent = tr('مجاني 🎉', 'Free 🎉');
+    else if (shippingCost === null) chkShipping.textContent = tr('اختر المحافظة لتحديد الشحن', 'Select governorate to see shipping');
+    else chkShipping.textContent = formatEGP(shippingCost);
+  }
+
+  const chkTotal = getElem('checkoutTotal');
+  if (chkTotal) {
+    chkTotal.textContent = pendingShipping
+      ? formatEGP(Math.max(0, subtotal - discountAmount)) + ' + ' + tr('الشحن', 'Shipping')
+      : formatEGP(finalTotal);
   }
 
   window.CURRENT_ORDER_TOTALS = {
     subtotal,
     discountAmount,
-    shipping,
+    shipping: effectiveShipping,
+    shippingCost,
     finalTotal
   };
 }
@@ -710,9 +774,12 @@ async function applyCoupon() {
 // 10. إتمام الطلب (Checkout & Order Submission)
 function openCheckout() {
   if (!cart.length) {
-    showToast('سلة التسوق فارغة');
+    showToast(tr('سلة التسوق فارغة', 'Cart is empty'));
     return;
   }
+  const govSelect = getElem('governorateSelect');
+  if (govSelect && govSelect.value) selectedGovernorate = govSelect.value;
+  calculateTotals();
   closeCart();
   openModal('checkoutModal');
 }
@@ -726,11 +793,29 @@ async function submitOrder(e) {
   else btn.textContent = tr('جاري تسجيل الطلب...', 'Saving order...');
 
   const form = new FormData(e.target);
-  const totals = window.CURRENT_ORDER_TOTALS || {
-    subtotal: cart.reduce((a, i) => a + (i.unit_price * i.quantity), 0),
-    discountAmount: 0,
-    shipping: STORE_CONFIG.SHIPPING_FEE,
-    finalTotal: cart.reduce((a, i) => a + (i.unit_price * i.quantity), 0) + STORE_CONFIG.SHIPPING_FEE
+  const governorate = (form.get('governorate') || '').trim();
+
+  if (!governorate) {
+    showToast(tr('يرجى اختيار المحافظة أولاً لحساب الشحن', 'Please select a governorate first'));
+    btn.disabled = false;
+    if (submitLabel) submitLabel.textContent = tr('تأكيد الطلب الآن', 'Confirm order');
+    else btn.textContent = tr('تأكيد الطلب الآن', 'Confirm order');
+    const govSelect = getElem('governorateSelect');
+    if (govSelect) govSelect.focus();
+    return;
+  }
+
+  selectedGovernorate = governorate;
+  calculateTotals();
+
+  const subtotal = cart.reduce((a, i) => a + (i.unit_price * i.quantity), 0);
+  const discountAmount = window.CURRENT_ORDER_TOTALS ? window.CURRENT_ORDER_TOTALS.discountAmount : 0;
+  const shippingCost = getShippingCost(governorate, subtotal) || 0;
+  const totals = {
+    subtotal,
+    discountAmount,
+    shipping: shippingCost,
+    finalTotal: Math.max(0, subtotal - discountAmount) + shippingCost
   };
 
   const totalCost = cart.reduce((acc, i) => acc + (i.unit_cost * i.quantity), 0);
@@ -898,6 +983,7 @@ function applyLanguage(lang) {
     toggle.setAttribute('aria-label', MCL_LANG === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
   }
 
+  calculateTotals();
   if (getElem('productsGrid')) renderGrid();
 }
 
