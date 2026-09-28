@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -68,11 +69,11 @@
         <div class="art-glow"></div>
         <div class="art-label art-label-top">FORM / FUNCTION</div>
         <div class="art-image-wrap">
-          <img src="mcl-hero-main.jpg" alt="MCL everyday t-shirt" class="hero-image">
+          <img src="generated_images/mcl-hero-main.jpg" alt="MCL everyday t-shirt" class="hero-image">
           <div class="art-overlay"></div>
         </div>
         <div class="art-detail-card">
-          <img src="mcl-hero-detail.jpg" alt="MCL fabric details">
+          <img src="generated_images/mcl-hero-detail.jpg" alt="MCL fabric details">
         </div>
         <div class="art-label art-label-bottom">EST. 2026 <span>✳</span> CAIRO</div>
         <div class="art-sticker">MCL<br><small>ESSENTIALS</small></div>
@@ -134,18 +135,31 @@
 <footer class="site-footer">
   <div class="container footer-top">
     <div class="footer-brand">
-      <a class="logo" href="#" onclick="goHome(event)"><span class="logo-mark">M</span><span class="logo-word">MCL</span></a>
-      <p>Modern everyday wear.<br>مصمم في مصر، معمول ليك.</p>
+      <a class="logo" href="#" onclick="goHome(event)" aria-label="MCL الرئيسية" data-aria-ar="MCL الرئيسية" data-aria-en="MCL Home"><span class="logo-mark">M</span><span class="logo-word">MCL</span></a>
+      <p data-ar-html="Modern everyday wear.<br>مصمم في مصر، معمول ليك." data-en-html="Modern everyday wear.<br>Designed in Egypt, made for you.">Modern everyday wear.<br>مصمم في مصر، معمول ليك.</p>
     </div>
     <div class="footer-links">
-      <div><span class="footer-heading">استكشف</span><a href="#products">المجموعة</a><a href="#about">عن MCL</a></div>
-      <div><span class="footer-heading">مساعدة</span><a href="#products">الشحن والتوصيل</a><a href="#products">تواصل معنا</a></div>
-      <div><span class="footer-heading">تابعنا</span><a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram ↗</a><a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok ↗</a><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">Facebook ↗</a></div>
+      <div>
+        <span class="footer-heading" data-ar="استكشف" data-en="Explore">استكشف</span>
+        <a href="#products" onclick="scrollToProducts(event)" data-ar="المجموعة" data-en="Collection">المجموعة</a>
+        <a href="#about" data-ar="عن MCL" data-en="About MCL">عن MCL</a>
+      </div>
+      <div>
+        <span class="footer-heading" data-ar="مساعدة" data-en="Help">مساعدة</span>
+        <a href="#products" onclick="scrollToProducts(event)" data-ar="الشحن والتوصيل" data-en="Shipping & Delivery">الشحن والتوصيل</a>
+        <a href="#about" data-ar="تواصل معنا" data-en="Contact Us">تواصل معنا</a>
+      </div>
+      <div>
+        <span class="footer-heading" data-ar="تابعنا" data-en="Follow Us">تابعنا</span>
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram ↗</a>
+        <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok ↗</a>
+        <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">Facebook ↗</a>
+      </div>
     </div>
   </div>
   <div class="container footer-bottom">
-    <p>© 2026 MCL. جميع الحقوق محفوظة.</p>
-    <p>Made for your everyday <span>✳</span></p>
+    <p data-ar="© 2026 MCL. جميع الحقوق محفوظة." data-en="© 2026 MCL. All rights reserved.">© 2026 MCL. جميع الحقوق محفوظة.</p>
+    <p data-ar-html="Made for your everyday <span>✳</span>" data-en-html="Made for your everyday <span>✳</span>">Made for your everyday <span>✳</span></p>
   </div>
 </footer>
 
@@ -186,10 +200,48 @@
     <form id="checkoutForm" onsubmit="submitOrder(event)">
       <div class="form-row"><div class="form-group"><label data-ar="الاسم بالكامل *" data-en="Full name *">الاسم بالكامل *</label><input required name="customer_name" placeholder="محمد أحمد"></div><div class="form-group"><label data-ar="رقم الموبايل *" data-en="Mobile number *">رقم الموبايل *</label><input required name="customer_phone" type="tel" placeholder="01012345678"></div></div>
       <div class="form-group"><label data-ar="البريد الإلكتروني (اختياري)" data-en="Email (optional)">البريد الإلكتروني (اختياري)</label><input name="customer_email" type="email" placeholder="name@example.com"></div>
-      <div class="form-row"><div class="form-group"><label data-ar="المحافظة *" data-en="Governorate *">المحافظة *</label><input required name="governorate" placeholder="القاهرة"></div><div class="form-group"><label data-ar="المدينة *" data-en="City *">المدينة *</label><input required name="city" placeholder="مدينة نصر"></div><div class="form-group"><label data-ar="المنطقة *" data-en="Area *">المنطقة *</label><input required name="area" placeholder="الحي السابع"></div></div>
+      <div class="form-row"><div class="form-group">
+            <label data-ar="المحافظة *" data-en="Governorate *">المحافظة *</label>
+            <select required name="governorate" id="governorateSelect" onchange="onGovernorateChange(this.value)" class="form-select">
+              <option value="" disabled selected data-ar="اختر المحافظة..." data-en="Select governorate...">اختر المحافظة...</option>
+              <option value="القاهرة" data-ar="القاهرة (الشحن 125 ج.م)" data-en="Cairo (Shipping 125 EGP)">القاهرة (الشحن 125 ج.م)</option>
+              <option value="الجيزة" data-ar="الجيزة (الشحن 125 ج.م)" data-en="Giza (Shipping 125 EGP)">الجيزة (الشحن 125 ج.م)</option>
+              <option value="الإسكندرية" data-ar="الإسكندرية (الشحن 135 ج.م)" data-en="Alexandria (Shipping 135 EGP)">الإسكندرية (الشحن 135 ج.م)</option>
+              <option value="القليوبية" data-ar="القليوبية (الشحن 135 ج.م)" data-en="Qalyubia (Shipping 135 EGP)">القليوبية (الشحن 135 ج.م)</option>
+              <option value="الدقهلية" data-ar="الدقهلية (الشحن 135 ج.م)" data-en="Dakahlia (Shipping 135 EGP)">الدقهلية (الشحن 135 ج.م)</option>
+              <option value="الشرقية" data-ar="الشرقية (الشحن 135 ج.م)" data-en="Sharkia (Shipping 135 EGP)">الشرقية (الشحن 135 ج.م)</option>
+              <option value="المنوفية" data-ar="المنوفية (الشحن 135 ج.م)" data-en="Monufia (Shipping 135 EGP)">المنوفية (الشحن 135 ج.م)</option>
+              <option value="الغربية" data-ar="الغربية (الشحن 135 ج.م)" data-en="Gharbia (Shipping 135 EGP)">الغربية (الشحن 135 ج.م)</option>
+              <option value="كفر الشيخ" data-ar="كفر الشيخ (الشحن 135 ج.م)" data-en="Kafr El Sheikh (Shipping 135 EGP)">كفر الشيخ (الشحن 135 ج.م)</option>
+              <option value="البحيرة" data-ar="البحيرة (الشحن 135 ج.م)" data-en="Beheira (Shipping 135 EGP)">البحيرة (الشحن 135 ج.م)</option>
+              <option value="دمياط" data-ar="دمياط (الشحن 135 ج.م)" data-en="Damietta (Shipping 135 EGP)">دمياط (الشحن 135 ج.م)</option>
+              <option value="بورسعيد" data-ar="بورسعيد (الشحن 135 ج.م)" data-en="Port Said (Shipping 135 EGP)">بورسعيد (الشحن 135 ج.م)</option>
+              <option value="الإسماعيلية" data-ar="الإسماعيلية (الشحن 135 ج.م)" data-en="Ismailia (Shipping 135 EGP)">الإسماعيلية (الشحن 135 ج.م)</option>
+              <option value="السويس" data-ar="السويس (الشحن 135 ج.م)" data-en="Suez (Shipping 135 EGP)">السويس (الشحن 135 ج.م)</option>
+              <option value="الفيوم" data-ar="الفيوم (الشحن 135 ج.م)" data-en="Faiyum (Shipping 135 EGP)">الفيوم (الشحن 135 ج.م)</option>
+              <option value="بني سويف" data-ar="بني سويف (الشحن 135 ج.م)" data-en="Beni Suef (Shipping 135 EGP)">بني سويف (الشحن 135 ج.م)</option>
+              <option value="المنيا" data-ar="المنيا (الشحن 135 ج.م)" data-en="Minya (Shipping 135 EGP)">المنيا (الشحن 135 ج.م)</option>
+              <option value="أسيوط" data-ar="أسيوط (الشحن 135 ج.م)" data-en="Assiut (Shipping 135 EGP)">أسيوط (الشحن 135 ج.م)</option>
+              <option value="سوهاج" data-ar="سوهاج (الشحن 135 ج.م)" data-en="Sohag (Shipping 135 EGP)">سوهاج (الشحن 135 ج.م)</option>
+              <option value="قنا" data-ar="قنا (الشحن 135 ج.م)" data-en="Qena (Shipping 135 EGP)">قنا (الشحن 135 ج.م)</option>
+              <option value="الأقصر" data-ar="الأقصر (الشحن 135 ج.م)" data-en="Luxor (Shipping 135 EGP)">الأقصر (الشحن 135 ج.م)</option>
+              <option value="أسوان" data-ar="أسوان (الشحن 135 ج.م)" data-en="Aswan (Shipping 135 EGP)">أسوان (الشحن 135 ج.م)</option>
+              <option value="البحر الأحمر" data-ar="البحر الأحمر (الشحن 135 ج.م)" data-en="Red Sea (Shipping 135 EGP)">البحر الأحمر (الشحن 135 ج.م)</option>
+              <option value="الوادي الجديد" data-ar="الوادي الجديد (الشحن 135 ج.م)" data-en="New Valley (Shipping 135 EGP)">الوادي الجديد (الشحن 135 ج.م)</option>
+              <option value="مطروح" data-ar="مطروح (الشحن 135 ج.م)" data-en="Matrouh (Shipping 135 EGP)">مطروح (الشحن 135 ج.م)</option>
+              <option value="شمال سيناء" data-ar="شمال سيناء (الشحن 135 ج.م)" data-en="North Sinai (Shipping 135 EGP)">شمال سيناء (الشحن 135 ج.م)</option>
+              <option value="جنوب سيناء" data-ar="جنوب سيناء (الشحن 135 ج.م)" data-en="South Sinai (Shipping 135 EGP)">جنوب سيناء (الشحن 135 ج.م)</option>
+            </select>
+          </div><div class="form-group"><label data-ar="المدينة *" data-en="City *">المدينة *</label><input required name="city" placeholder="مدينة نصر"></div><div class="form-group"><label data-ar="المنطقة *" data-en="Area *">المنطقة *</label><input required name="area" placeholder="الحي السابع"></div></div>
       <div class="form-group"><label data-ar="العنوان بالتفصيل *" data-en="Full address *">العنوان بالتفصيل *</label><input required name="address_line" placeholder="الشارع والعلامة المميزة"></div>
       <div class="form-row"><div class="form-group"><label data-ar="رقم العمارة" data-en="Building">رقم العمارة</label><input name="building_number" placeholder="12"></div><div class="form-group"><label data-ar="رقم الشقة" data-en="Apartment">رقم الشقة</label><input name="apartment_number" placeholder="4"></div><div class="form-group"><label data-ar="الدور" data-en="Floor">الدور</label><input name="floor_number" placeholder="2"></div></div>
       <div class="form-group"><label data-ar="ملاحظات إضافية للتوصيل" data-en="Delivery notes">ملاحظات إضافية للتوصيل</label><input name="address_notes" placeholder="ملاحظات للمندوب..."></div>
+      <div class="order-summary checkout-summary" style="margin-bottom: 1.25rem; background: rgba(255,255,255,0.03); padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+        <div class="summary-line"><span data-ar="المجموع" data-en="Subtotal">المجموع</span><span id="checkoutSubtotal">0 ج.م</span></div>
+        <div class="summary-line discount-line" id="checkoutDiscountLine" style="display:none;"><span data-ar="الخصم" data-en="Discount">الخصم</span><span id="checkoutDiscount">- 0 ج.م</span></div>
+        <div class="summary-line"><span data-ar="الشحن" data-en="Shipping">الشحن</span><span id="checkoutShipping" style="font-weight: 600;">يُحدد بعد اختيار المحافظة</span></div>
+        <div class="summary-line total-line"><span data-ar="الإجمالي النهائي" data-en="Total">الإجمالي النهائي</span><span id="checkoutTotal">0 ج.م</span></div>
+      </div>
       <div class="payment-method-box"><div class="method-icon">✦</div><div><div class="method-title" data-ar="الدفع عند الاستلام" data-en="Cash on delivery">الدفع عند الاستلام</div><div class="method-desc" data-ar="عاين طلبك وادفع عند وصوله." data-en="Inspect your order and pay on delivery.">عاين طلبك وادفع عند وصوله.</div></div><span class="method-check">✓</span></div>
       <button type="submit" class="btn btn-primary btn-block" id="submitOrderBtn" data-ar="تأكيد الطلب الآن" data-en="Confirm order"><span class="button-label">تأكيد الطلب الآن</span> <span>←</span></button>
     </form>
