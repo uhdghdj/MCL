@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Test</title>
+</head>
+
+<body>
+
+  <h2>اختبار WhatsApp</h2>
+
+  <input id="phone" placeholder="رقم واتساب مثل 2010XXXXXXXX">
+  <br><br>
+
+  <button onclick="sendMessage()">إرسال رسالة اختبار</button>
+
+  <p id="result"></p>
+
+  <script>
+    async function sendMessage() {
+      const phone = document.getElementById("phone").value;
+      const result = document.getElementById("result");
+
+      result.textContent = "جاري الإرسال...";
+
+      try {
+        const response = await fetch("/api/send-whatsapp", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            phone: phone,
+            message: "رسالة اختبار من MCL ✅"
+          })
+        });
+
+        const data = await response.json();
+
+        console.log(data);
+
+        if (response.ok) {
+          result.textContent = "✅ تم إرسال الطلب إلى WhatsApp API";
+        } else {
+          result.textContent = "❌ حصل خطأ: " + JSON.stringify(data);
+        }
+
+      } catch (error) {
+        result.textContent = "❌ خطأ في الاتصال: " + error.message;
+      }
+    }
+  </script>
+
+</body>
+</html>
