@@ -98,6 +98,40 @@ button { border: 0; cursor: pointer; }
 .art-index { position: absolute; top: 47%; right: -4%; z-index: 3; font-family: var(--display); font-size: .66rem; font-weight: 800; transform: rotate(90deg); }
 .art-index span { color: var(--muted); padding: 0 5px; }
 
+/* Winter drop countdown */
+.winter-countdown { background: var(--ink); color: var(--white); border-top: 1px solid rgba(255,255,255,.12); }
+.winter-countdown-inner { min-height: 142px; display: flex; align-items: center; justify-content: space-between; gap: 28px; padding-top: 22px; padding-bottom: 22px; }
+.winter-countdown-copy { display: flex; flex-direction: column; align-items: flex-start; }
+.winter-countdown-kicker { color: var(--lime); font-family: var(--display); font-size: .65rem; font-weight: 800; letter-spacing: .2em; }
+.winter-countdown-copy h2 { margin-top: 3px; font-family: var(--display); font-size: clamp(1.45rem, 3vw, 2.15rem); font-weight: 800; letter-spacing: .04em; line-height: 1.15; }
+.winter-countdown-copy p { margin-top: 8px; color: rgba(255,255,255,.64); font-family: var(--display); font-size: .68rem; font-weight: 700; letter-spacing: .12em; }
+.winter-countdown-timer { display: flex; align-items: center; gap: clamp(10px, 2.6vw, 28px); direction: ltr; }
+.winter-countdown-unit { min-width: 57px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.winter-countdown-unit strong { color: var(--lime); font-family: var(--display); font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.winter-countdown-unit span { color: rgba(255,255,255,.66); font-family: var(--display); font-size: .58rem; font-weight: 700; letter-spacing: .16em; }
+.winter-countdown-colon { color: rgba(255,255,255,.4); font-family: var(--display); font-size: 2rem; transform: translateY(-5px); }
+.winter-countdown-live { color: var(--lime); font-family: var(--display); font-size: clamp(1.2rem, 2.5vw, 1.8rem); font-weight: 800; letter-spacing: .06em; text-align: center; }
+.winter-countdown-live[hidden] { display: none; }
+.winter-countdown.is-live .winter-countdown-timer { display: none; }
+.winter-countdown.is-live .winter-countdown-inner { justify-content: center; }
+.winter-countdown.is-live .winter-countdown-copy { align-items: center; }
+html.winter-drop-active,
+html.winter-drop-active body { min-height: 100%; overflow: hidden; background: #000; }
+html.winter-drop-active body > :not(main) { display: none !important; }
+html.winter-drop-active main { min-height: 100vh; display: grid; place-items: center; margin: 0; background: #000; }
+html.winter-drop-active main > :not(#winterCountdown) { display: none !important; }
+html.winter-drop-active #winterCountdown { width: 100%; min-height: 100vh; display: flex; align-items: center; background: #000; }
+html.winter-drop-active .winter-countdown-inner { min-height: 100vh; flex-direction: column; justify-content: center; gap: 36px; padding-top: 32px; padding-bottom: 32px; text-align: center; }
+html.winter-drop-active .winter-countdown-copy { align-items: center; }
+html.winter-drop-active .winter-countdown-kicker { font-size: .78rem; }
+html.winter-drop-active .winter-countdown-copy h2 { font-size: clamp(2.5rem, 8vw, 5rem); letter-spacing: .06em; }
+html.winter-drop-active .winter-countdown-copy p { font-size: .78rem; }
+html.winter-drop-active .winter-countdown-timer { gap: clamp(14px, 4vw, 42px); }
+html.winter-drop-active .winter-countdown-unit { min-width: clamp(64px, 10vw, 110px); }
+html.winter-drop-active .winter-countdown-unit strong { font-size: clamp(3rem, 9vw, 6rem); }
+html.winter-drop-active .winter-countdown-unit span { font-size: .72rem; }
+html.winter-drop-active .winter-countdown-colon { font-size: clamp(2rem, 6vw, 3.5rem); }
+
 /* Ticker */
 .ticker { width: 100%; overflow: hidden; background: var(--ink); color: var(--lime); padding: 13px 0 11px; }
 .ticker-track { width: max-content; display: flex; align-items: center; gap: 33px; direction: ltr; animation: ticker 32s linear infinite; font-family: var(--display); font-size: .72rem; font-weight: 700; letter-spacing: .16em; white-space: nowrap; }
@@ -392,6 +426,14 @@ button { border: 0; cursor: pointer; }
   .hero-desc { font-size: .88rem; line-height: 1.8; margin-bottom: 22px; }
   .hero-meta { margin-top: 28px; gap: 14px; flex-wrap: wrap; }
   .hero-meta-item span { font-size: .58rem; }
+  .winter-countdown-inner { min-height: 0; flex-direction: column; gap: 18px; padding-top: 22px; padding-bottom: 24px; text-align: center; }
+  .winter-countdown-copy { align-items: center; }
+  .winter-countdown-copy h2 { font-size: 1.55rem; }
+  .winter-countdown-copy p { font-size: .6rem; }
+  .winter-countdown-timer { gap: 13px; }
+  .winter-countdown-unit { min-width: 48px; }
+  .winter-countdown-unit strong { font-size: 2.45rem; }
+  .winter-countdown-colon { font-size: 1.55rem; }
 
   /* Products collection on mobile */
   .products-section { padding-top: 48px; padding-bottom: 60px; }
