@@ -6,6 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#111111">
 <meta name="description" content="MCL — قطع يومية بتصميم نظيف وحضور واضح.">
+<script>
+  if (Date.now() < Date.parse('2026-10-01T23:00:00+03:00')) {
+    document.documentElement.classList.add('winter-drop-active');
+  }
+</script>
 <title>MCL | Modern Everyday Wear</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,6 +104,23 @@
   </div>
 </section>
 
+  <section class="winter-countdown" id="winterCountdown" data-target-time="2026-10-01T23:00:00+03:00" aria-labelledby="winterCountdownTitle">
+    <div class="container winter-countdown-inner">
+      <div class="winter-countdown-copy">
+        <span class="winter-countdown-kicker" data-ar="قريبًا" data-en="COMING SOON">COMING SOON</span>
+        <h2 id="winterCountdownTitle" data-ar="مجموعة الشتاء" data-en="WINTER DROP">WINTER DROP</h2>
+        <p data-ar="النهارده · ١١ مساءً بتوقيت القاهرة" data-en="TONIGHT · 11 PM CAIRO TIME">TONIGHT · 11 PM CAIRO TIME</p>
+      </div>
+      <div class="winter-countdown-timer" role="timer" aria-label="Time remaining until the Winter Drop">
+        <div class="winter-countdown-unit"><strong id="winterHours">00</strong><span data-ar="ساعة" data-en="HRS">HRS</span></div>
+        <span class="winter-countdown-colon" aria-hidden="true">:</span>
+        <div class="winter-countdown-unit"><strong id="winterMinutes">00</strong><span data-ar="دقيقة" data-en="MIN">MIN</span></div>
+        <span class="winter-countdown-colon" aria-hidden="true">:</span>
+        <div class="winter-countdown-unit"><strong id="winterSeconds">00</strong><span data-ar="ثانية" data-en="SEC">SEC</span></div>
+      </div>
+    </div>
+  </section>
+
   <div class="ticker" aria-hidden="true">
     <div class="ticker-track">
       <span>LESS NOISE. MORE YOU.</span><i>✳</i><span>MADE FOR EVERYDAY.</span><i>✳</i><span>LESS NOISE. MORE YOU.</span><i>✳</i><span>MADE FOR EVERYDAY.</span><i>✳</i>
@@ -156,7 +178,7 @@
       <a class="social-circle" id="socialInstagram" href="https://www.instagram.com/mcl__outfit?stkn=dzJqbjVmOXpieHVk&amp;utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.7" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.8" r="1.1" fill="currentColor"/></svg>
       </a>
-     
+      
       <a class="social-circle" id="socialTiktok" href="https://www.tiktok.com/@mcl_outfit1" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.6 3h-3.1v12.1a2.6 2.6 0 1 1-2.3-2.58v-3.2a5.8 5.8 0 1 0 5.4 5.78V9a8.1 8.1 0 0 0 4.4 1.3V7.2A5 5 0 0 1 15.6 3Z" fill="currentColor"/></svg>
       </a>
