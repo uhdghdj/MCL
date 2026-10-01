@@ -13,7 +13,7 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLI
 const STORE_CONFIG = {
   SHIPPING_CAIRO_GIZA: 125,      // مصاريف الشحن داخل القاهرة والجيزة بالجنيه
   SHIPPING_OTHER_GOVS: 135,      // مصاريف الشحن لبقية المحافظات بالجنيه
-  FREE_SHIPPING_MIN: 1500,       // شحن مجاني إذا تعدى هذا المبلغ
+  BUY_TWO_DISCOUNT_PERCENT: 10,  // خصم 10٪ عند شراء قطعتين أو أكثر
   LOW_STOCK_LIMIT: 5             // حد التنبيه بانخفاض المخزون
 };
 
@@ -21,9 +21,6 @@ let selectedGovernorate = '';
 
 function getShippingCost(governorate, subtotal) {
   if (!governorate) return null;
-  const numSubtotal = Number(subtotal) || 0;
-  // الشحن المجاني يسري فقط إذا كان إجمالي المنتجات 1500 ج.م فأكثر
-  if (numSubtotal >= STORE_CONFIG.FREE_SHIPPING_MIN) return 0;
   const gov = String(governorate).trim();
   const isCairoOrGiza = ['القاهرة', 'الجيزة', 'Cairo', 'Giza'].some(g => gov.includes(g));
   return isCairoOrGiza ? STORE_CONFIG.SHIPPING_CAIRO_GIZA : STORE_CONFIG.SHIPPING_OTHER_GOVS;
@@ -606,7 +603,9 @@ function removeCartItem(index) {
 
 function calculateTotals() {
   const subtotal = cart.reduce((acc, i) => acc + (i.unit_price * i.quantity), 0);
+  const totalQuantity = cart.reduce((acc, i) => acc + (Number(i.quantity) || 0), 0);
   let discountAmount = 0;
+  let promotionCode = null;
 
   if (appliedCouponData) {
     const eligibleSub = cart.reduce((acc, i) => {
@@ -625,6 +624,9 @@ function calculateTotals() {
       }
       discountAmount = Math.min(discountAmount, eligibleSub);
     }
+  } else if (totalQuantity >= 2) {
+    discountAmount = subtotal * (STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT / 100);
+    promotionCode = 'BUY_2_GET_10';
   }
 
   const shippingCost = getShippingCost(selectedGovernorate, subtotal);
@@ -637,9 +639,7 @@ function calculateTotals() {
 
   const sumShippingEl = getElem('sumShipping');
   if (sumShippingEl) {
-    if (subtotal >= STORE_CONFIG.FREE_SHIPPING_MIN && subtotal > 0) {
-      sumShippingEl.textContent = tr('مجاني 🎉', 'Free 🎉');
-    } else if (shippingCost === null) {
+    if (shippingCost === null) {
       sumShippingEl.textContent = tr('اختر المحافظة', 'Select governorate');
     } else {
       sumShippingEl.textContent = formatEGP(shippingCost);
@@ -648,7 +648,7 @@ function calculateTotals() {
 
   const sumTotalEl = getElem('sumTotal');
   if (sumTotalEl) {
-    if (shippingCost === null && subtotal > 0 && subtotal < STORE_CONFIG.FREE_SHIPPING_MIN) {
+    if (shippingCost === null && subtotal > 0) {
       sumTotalEl.textContent = formatEGP(Math.max(0, subtotal - discountAmount)) + ' + ' + tr('الشحن', 'Shipping');
     } else {
       sumTotalEl.textContent = formatEGP(finalTotal);
@@ -659,6 +659,12 @@ function calculateTotals() {
   if (discountLine) {
     if (discountAmount > 0) {
       discountLine.style.display = 'flex';
+      const discountLabel = getElem('discountLabel');
+      if (discountLabel) {
+        discountLabel.textContent = promotionCode
+          ? tr('عرض قطعتين (خصم 10٪)', 'Buy 2 offer (10% off)')
+          : tr('الخصم', 'Discount');
+      }
       getElem('sumDiscount').textContent = `- ${formatEGP(discountAmount)}`;
     } else {
       discountLine.style.display = 'none';
@@ -682,9 +688,7 @@ function calculateTotals() {
 
   const chkShipping = getElem('checkoutShipping');
   if (chkShipping) {
-    if (subtotal >= STORE_CONFIG.FREE_SHIPPING_MIN && subtotal > 0) {
-      chkShipping.textContent = tr('مجاني 🎉', 'Free 🎉');
-    } else if (shippingCost === null) {
+    if (shippingCost === null) {
       chkShipping.textContent = tr('اختر المحافظة', 'Select governorate');
     } else {
       chkShipping.textContent = formatEGP(shippingCost);
@@ -693,7 +697,7 @@ function calculateTotals() {
 
   const chkTotal = getElem('checkoutTotal');
   if (chkTotal) {
-    if (shippingCost === null && subtotal > 0 && subtotal < STORE_CONFIG.FREE_SHIPPING_MIN) {
+    if (shippingCost === null && subtotal > 0) {
       chkTotal.textContent = formatEGP(Math.max(0, subtotal - discountAmount)) + ' + ' + tr('الشحن', 'Shipping');
     } else {
       chkTotal.textContent = formatEGP(finalTotal);
@@ -703,6 +707,7 @@ function calculateTotals() {
   window.CURRENT_ORDER_TOTALS = {
     subtotal,
     discountAmount,
+    promotionCode,
     shipping: effectiveShipping,
     shippingCost,
     finalTotal
@@ -839,6 +844,7 @@ async function submitOrder(e) {
   const totals = {
     subtotal,
     discountAmount,
+    promotionCode: window.CURRENT_ORDER_TOTALS ? window.CURRENT_ORDER_TOTALS.promotionCode : null,
     shipping: shippingCost,
     finalTotal: Math.max(0, subtotal - discountAmount) + shippingCost
   };
@@ -866,7 +872,7 @@ async function submitOrder(e) {
     total_cost: totalCost,
     total_profit: totalProfit,
     discount_id: appliedCouponData ? appliedCouponData.id : null,
-    discount_code: appliedCouponData ? appliedCouponData.code : null,
+    discount_code: appliedCouponData ? appliedCouponData.code : totals.promotionCode,
     payment_method: 'cash_on_delivery',
     payment_status: 'pending',
     status: 'pending',
@@ -882,29 +888,6 @@ async function submitOrder(e) {
       .single();
 
     if (oError) throw oError;
-
-    // 1.1 إشعار البريد الإداري عبر Supabase Edge Function (لا يمنع إتمام الطلب)
-    try {
-      console.log('📧 جاري استدعاء send-order-email للطلب:', newOrder.id);
-      const { data: emailResult, error: emailError } =
-        await supabaseClient.functions.invoke('send-order-email', {
-          body: {
-            order_id: newOrder.id
-          }
-        });
-      console.log('📧 نتيجة send-order-email:', {
-        emailResult,
-        emailError
-      });
-
-      if (emailError) {
-        console.error('فشل إرسال إشعار الطلب بالبريد:', emailError);
-      } else {
-        console.log('تم استدعاء send-order-email بنجاح:', emailResult);
-      }
-    } catch (emailErr) {
-      console.error('فشل إرسال إشعار الطلب بالبريد:', emailErr);
-    }
 
     // 2. إدراج عناصر الطلب في جدول order_items (Snapshot للأسعار)
     const itemsPayload = cart.map(item => ({
