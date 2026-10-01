@@ -972,6 +972,13 @@ function finishOrder() {
   goHome();
 }
 
+function handleNewsletterSubscribe(event) {
+  event.preventDefault();
+  const message = getElem('newsletterMessage');
+  if (!message) return;
+  message.hidden = false;
+}
+
 function applyLanguage(lang) {
   MCL_LANG = lang === 'en' ? 'en' : 'ar';
   localStorage.setItem('mcl_language', MCL_LANG);
