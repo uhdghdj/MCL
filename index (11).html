@@ -1,0 +1,312 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111111">
+<meta name="description" content="MCL — قطع يومية بتصميم نظيف وحضور واضح.">
+<script>
+  if (Date.now() < Date.parse('2026-10-01T23:00:00+03:00')) {
+    document.documentElement.classList.add('winter-drop-active');
+  }
+</script>
+<title>MCL | Modern Everyday Wear</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="store.css">
+</head>
+<body>
+
+<div class="announcement-bar">
+  <div class="container announcement-inner">
+    <span data-ar="اشتري قطعتين وخد خصم 10٪" data-en="Buy 2 items and get 10% off">اشتري قطعتين وخد خصم 10٪</span>
+    <span class="announcement-dot">•</span>
+    <span data-ar="الدفع عند الاستلام متاح" data-en="Cash on delivery available">الدفع عند الاستلام متاح</span>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container header-inner">
+      <a class="logo" href="#" onclick="goHome(event)" aria-label="MCL الرئيسية" data-aria-ar="MCL الرئيسية" data-aria-en="MCL home">
+      <span class="logo-mark">M</span><span class="logo-word">MCL</span>
+    </a>
+    <nav class="main-nav" aria-label="التنقل الرئيسي" data-aria-ar="التنقل الرئيسي" data-aria-en="Main navigation">
+      <a class="active" href="#" onclick="goHome(event)" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
+      <a href="#products" onclick="scrollToProducts(event)" data-ar="المجموعة" data-en="Collection">المجموعة</a>
+      <a href="#about" data-ar="عن MCL" data-en="About MCL">عن MCL</a>
+    </nav>
+    <div class="header-actions">
+      <button class="language-toggle" id="languageToggle" type="button" onclick="toggleLanguage()" aria-label="التبديل إلى الإنجليزية">EN</button>
+      <button class="search-trigger" type="button" onclick="focusSearch()" aria-label="البحث" data-aria-ar="البحث" data-aria-en="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+      </button>
+      <button class="cart-trigger" type="button" onclick="openCart()" aria-label="سلة التسوق" data-aria-ar="سلة التسوق" data-aria-en="Shopping cart">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero hero-editorial">
+  <div class="hero-bg-media">
+    <img src="hero-bg.jpg" alt="MCL Polo Collection" class="hero-editorial-img" onerror="this.src='WhatsApp_Image_2026-09-28_at_4.16.37_PM.jpeg'">
+    <div class="hero-editorial-overlay"></div>
+  </div>
+  
+  <div class="container hero-editorial-container">
+    <div class="hero-editorial-content">
+      <div class="hero-collection-tag">
+        <span data-ar="MCL / تشكيلة البولو" data-en="MCL / POLO COLLECTION">MCL / POLO COLLECTION</span>
+        <span class="tag-line"></span>
+      </div>
+
+      <h1 class="hero-editorial-title" 
+          data-ar-html="بولو فاخر.<br>حضور مختلف." 
+          data-en-html="The Polo.<br>Made Different.">
+        The Polo.<br>Made Different.
+      </h1>
+
+      <p class="hero-editorial-desc" 
+         data-ar="تيشرتات بولو فاخرة لارتداء يومي راقٍ." 
+         data-en="Premium polos for everyday wear.">
+        Premium polos for everyday wear.
+      </p>
+
+      <div class="hero-editorial-actions">
+        <a href="#products" onclick="scrollToProducts(event)" class="btn-hero-outline" 
+           data-ar="تسوق البولو &larr;" 
+           data-en="SHOP POLOS &rarr;">
+          SHOP POLOS &rarr;
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-editorial-bottom">
+      <div class="hero-specs-list">
+        <div class="spec-line"></div>
+        <div class="spec-items">
+          <span data-ar="قصة سليم فت" data-en="SLIM FIT">SLIM FIT</span>
+          <span data-ar="خامات فاخرة" data-en="PREMIUM FABRIC">PREMIUM FABRIC</span>
+          <span data-ar="تصميم دائم" data-en="TIMELESS STYLE">TIMELESS STYLE</span>
+        </div>
+      </div>
+
+      <div class="hero-carousel-dots" aria-hidden="true">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <section class="winter-countdown" id="winterCountdown" data-target-time="2026-10-01T23:00:00+03:00" aria-labelledby="winterCountdownTitle">
+    <div class="container winter-countdown-inner">
+      <div class="winter-countdown-copy">
+        <span class="winter-countdown-kicker" data-ar="قريبًا" data-en="COMING SOON">COMING SOON</span>
+        <h2 id="winterCountdownTitle" data-ar="مجموعة الشتاء" data-en="WINTER DROP">WINTER DROP</h2>
+        <p data-ar="النهارده · ١١ مساءً بتوقيت القاهرة" data-en="TONIGHT · 11 PM CAIRO TIME">TONIGHT · 11 PM CAIRO TIME</p>
+      </div>
+      <div class="winter-countdown-timer" role="timer" aria-label="Time remaining until the Winter Drop">
+        <div class="winter-countdown-unit"><strong id="winterHours">00</strong><span data-ar="ساعة" data-en="HRS">HRS</span></div>
+        <span class="winter-countdown-colon" aria-hidden="true">:</span>
+        <div class="winter-countdown-unit"><strong id="winterMinutes">00</strong><span data-ar="دقيقة" data-en="MIN">MIN</span></div>
+        <span class="winter-countdown-colon" aria-hidden="true">:</span>
+        <div class="winter-countdown-unit"><strong id="winterSeconds">00</strong><span data-ar="ثانية" data-en="SEC">SEC</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>LESS NOISE. MORE YOU.</span><i>✳</i><span>MADE FOR EVERYDAY.</span><i>✳</i><span>LESS NOISE. MORE YOU.</span><i>✳</i><span>MADE FOR EVERYDAY.</span><i>✳</i>
+    </div>
+  </div>
+
+  <section class="container products-section" id="products">
+    <div class="section-header">
+      <div>
+        <div class="eyebrow muted-eyebrow">THE COLLECTION</div>
+        <h2 class="section-title" data-ar-html="اختار قطعتك<span class='title-dot'>.</span>" data-en-html="Find your piece<span class='title-dot'>.</span>">اختار قطعتك<span class="title-dot">.</span></h2>
+        <p class="section-subtitle" data-ar="أساسيات مصممة لتكون جزءًا من يومك، مش مجرد قطعة في دولابك." data-en="Essentials made to be part of your day, not just another piece in your wardrobe.">أساسيات مصممة لتكون جزءًا من يومك، مش مجرد قطعة في دولابك.</p>
+      </div>
+      <div class="section-tools">
+        <label class="search-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+          <input id="productSearch" type="search" placeholder="ابحث عن قطعة..." data-placeholder-ar="ابحث عن قطعة..." data-placeholder-en="Search pieces..." oninput="renderGrid()" aria-label="ابحث عن منتج" data-aria-ar="ابحث عن منتج" data-aria-en="Search products">
+        </label>
+        <select id="sortSelect" class="sort-select" onchange="renderGrid()" aria-label="ترتيب المنتجات">
+          <option value="new" data-ar="الأحدث" data-en="Newest">الأحدث</option>
+          <option value="low" data-ar="الأقل سعرًا" data-en="Price: low to high">الأقل سعرًا</option>
+          <option value="high" data-ar="الأعلى سعرًا" data-en="Price: high to low">الأعلى سعرًا</option>
+        </select>
+      </div>
+    </div>
+    <div class="collection-filters" role="tablist" aria-label="تصنيفات المنتجات">
+      <button class="filter-chip active" type="button" data-category="all" onclick="setCategory('all', this)" data-ar="الكل" data-en="All">الكل</button>
+      <button class="filter-chip" type="button" data-category="tshirt" onclick="setCategory('tshirt', this)" data-ar="تيشيرتات" data-en="T-shirts">تيشيرتات</button>
+      <button class="filter-chip" type="button" data-category="hoodie" onclick="setCategory('hoodie', this)" data-ar="هوديز" data-en="Hoodies">هوديز</button>
+      <button class="filter-chip" type="button" data-category="essential" onclick="setCategory('essential', this)" data-ar="الأساسيات" data-en="Essentials">الأساسيات</button>
+      <span class="product-count" id="productCount"></span>
+    </div>
+    <div class="products-grid" id="productsGrid">
+      <div class="loading-state"><span class="loader"></span><span data-ar="جاري تحميل المجموعة..." data-en="Loading collection...">جاري تحميل المجموعة...</span></div>
+    </div>
+  </section>
+
+  <section class="value-strip" id="about">
+    <div class="container value-grid">
+      <div class="value-intro">
+        <div class="eyebrow">WHY MCL</div>
+        <h2 data-ar-html="تفاصيل صغيرة.<br><em>فرق كبير.</em>" data-en-html="Small details.<br><em>Big difference.</em>">تفاصيل صغيرة.<br><em>فرق كبير.</em></h2>
+      </div>
+      <div class="value-item"><span class="value-number">01</span><div><h3 data-ar="خامات مريحة" data-en="Comfortable fabrics">خامات مريحة</h3><p data-ar="ملمس ناعم وخامات مختارة للاستخدام اليومي." data-en="Soft textures and fabrics selected for everyday wear.">ملمس ناعم وخامات مختارة للاستخدام اليومي.</p></div></div>
+      <div class="value-item"><span class="value-number">02</span><div><h3 data-ar="قصّات مدروسة" data-en="Considered fits">قصّات مدروسة</h3><p data-ar="شكل نظيف ومساحة حركة من غير تعقيد." data-en="Clean shapes with room to move, without the fuss.">شكل نظيف ومساحة حركة من غير تعقيد.</p></div></div>
+      <div class="value-item"><span class="value-number">03</span><div><h3 data-ar="مصمم في مصر" data-en="Designed in Egypt">مصمم في مصر</h3><p data-ar="هوية محلية بروح معاصرة تناسبك أنت." data-en="A local identity with a contemporary point of view.">هوية محلية بروح معاصرة تناسبك أنت.</p></div></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" id="footer">
+  <div class="container">
+    <div class="footer-socials" aria-label="Social media">
+      
+      <a class="social-circle" id="socialInstagram" href="https://www.instagram.com/mcl__outfit?stkn=dzJqbjVmOXpieHVk&amp;utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.7" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.8" r="1.1" fill="currentColor"/></svg>
+      </a>
+      
+      <a class="social-circle" id="socialTiktok" href="https://www.tiktok.com/@mcl_outfit1" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.6 3h-3.1v12.1a2.6 2.6 0 1 1-2.3-2.58v-3.2a5.8 5.8 0 1 0 5.4 5.78V9a8.1 8.1 0 0 0 4.4 1.3V7.2A5 5 0 0 1 15.6 3Z" fill="currentColor"/></svg>
+      </a>
+    </div>
+
+    <div class="footer-content">
+      <nav class="footer-quicklinks" aria-label="Quick links" data-aria-ar="روابط سريعة" data-aria-en="Quick links">
+        <h2 data-ar="روابط سريعة" data-en="Quick Links">Quick Links</h2>
+        <a href="#about" data-ar="عنّا" data-en="About us">About us</a>
+        <a href="#about" data-ar="تواصل معنا" data-en="Contact us">Contact us</a>
+        <a href="#about" data-ar="الأسئلة الشائعة" data-en="FAQs">FAQs</a>
+        <a href="#products" data-ar="الشحن والتوصيل" data-en="Shipping &amp; Delivery">Shipping &amp; Delivery</a>
+        <a href="#products" data-ar="الاسترجاع والاستبدال" data-en="Return &amp; Exchange">Return &amp; Exchange</a>
+        <a href="#footer" data-ar="سياسة الخصوصية" data-en="Privacy Policy">Privacy Policy</a>
+      </nav>
+
+      <section class="footer-newsletter" aria-labelledby="newsletterTitle">
+        <h2 id="newsletterTitle" data-ar="اشترك ليصلك كل جديد وعروض حصرية!" data-en="Join For Exclusive Email Offers!">Join For Exclusive Email Offers!</h2>
+        <p data-ar="اكتب بريدك الإلكتروني ليصلك أحدث العروض والمنتجات الجديدة." data-en="Enter your email to receive the latest offers and new products.">Enter your email to receive the latest offers and new products.</p>
+        <form class="newsletter-form" onsubmit="handleNewsletterSubscribe(event)">
+          <label class="sr-only" for="newsletterEmail" data-ar="عنوان البريد الإلكتروني" data-en="Email address">Email address</label>
+          <input id="newsletterEmail" type="email" autocomplete="email" required placeholder="Enter email address" data-placeholder-ar="أدخل بريدك الإلكتروني" data-placeholder-en="Enter email address">
+          <button type="submit" data-ar="اشترك" data-en="Subscribe">Subscribe</button>
+          <a class="back-to-top" href="#" onclick="goHome(event)" aria-label="العودة إلى أعلى الصفحة" data-aria-ar="العودة إلى أعلى الصفحة" data-aria-en="Back to top">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </form>
+        <p class="newsletter-message" id="newsletterMessage" role="status" hidden data-ar="الاشتراك بالبريد الإلكتروني هيتفعّل قريبًا." data-en="Email subscriptions will be available soon.">Email subscriptions will be available soon.</p>
+      </section>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p data-ar="© 2026 MCL. جميع الحقوق محفوظة." data-en="© 2026 MCL. All rights reserved.">© 2026 MCL. جميع الحقوق محفوظة.</p>
+    <p><span data-ar="صُنع لأجلك كل يوم" data-en="Made for your everyday">صُنع لأجلك كل يوم</span> <span>✳</span></p>
+  </div>
+</footer>
+
+<!-- Product details -->
+<div class="modal" id="productModal" onclick="if(event.target===this)closeModal('productModal')">
+  <div class="modal-dialog product-dialog">
+    <button class="modal-close" onclick="closeModal('productModal')" aria-label="إغلاق">&times;</button>
+    <div class="product-gallery" id="pmGallery"></div>
+    <div class="product-details">
+      <div class="pm-category" id="pmCategory">MCL ESSENTIALS</div>
+      <h2 class="pm-title" id="pmName"></h2>
+      <div class="pm-price-wrap" id="pmPrice"></div>
+      <p class="pm-description" id="pmDesc"></p>
+      <div class="pm-section" id="pmColorsWrap"><label class="pm-label"><span data-ar="اللون:" data-en="Color:">اللون:</span> <span id="selectedColorName" class="active-label"></span></label><div class="color-options" id="pmColors"></div></div>
+      <div class="pm-section" id="pmSizesWrap"><label class="pm-label"><span data-ar="المقاس:" data-en="Size:">المقاس:</span> <span id="selectedSizeName" class="active-label"></span></label><div class="size-options" id="pmSizes"></div></div>
+      <div class="pm-section"><label class="pm-label" data-ar="الكمية:" data-en="Quantity:">الكمية:</label><div class="quantity-control"><button type="button" onclick="changeQty(-1)">−</button><span id="pmQty">1</span><button type="button" onclick="changeQty(1)">+</button></div></div>
+      <div class="stock-status" id="pmStock"></div>
+      <button class="btn btn-primary btn-block" id="addToCartBtn" onclick="addToCart()" data-ar="إضافة إلى السلة" data-en="Add to cart">إضافة إلى السلة</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cart -->
+<div class="drawer-backdrop" id="cartOverlay" onclick="closeCart()"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-label="سلة التسوق">
+  <div class="drawer-header"><h3><span data-ar="سلة التسوق" data-en="Shopping cart">سلة التسوق</span> <span class="drawer-count">(<span id="cartCount">0</span>)</span></h3><button class="icon-btn" onclick="closeCart()" aria-label="إغلاق">&times;</button></div>
+  <div class="drawer-body" id="cartItems"></div>
+  <div class="drawer-footer" id="cartFoot">
+    <div class="coupon-box"><div class="coupon-input-wrap"><input type="text" id="couponInput" placeholder="كود الخصم" data-placeholder-ar="كود الخصم" data-placeholder-en="Discount code" autocomplete="off"><button class="btn btn-secondary" onclick="applyCoupon()" data-ar="تطبيق" data-en="Apply">تطبيق</button></div><div class="coupon-msg" id="couponMsg"></div></div>
+    <div class="order-summary"><div class="summary-line"><span data-ar="المجموع" data-en="Subtotal">المجموع</span><span id="sumSubtotal">0 ج.م</span></div><div class="summary-line discount-line" id="discountLine" style="display:none;"><span id="discountLabel" data-ar="الخصم" data-en="Discount">الخصم</span><span id="sumDiscount">- 0 ج.م</span></div><div class="summary-line"><span data-ar="الشحن" data-en="Shipping">الشحن</span><span id="sumShipping">70 ج.م</span></div><div class="summary-line total-line"><span data-ar="الإجمالي" data-en="Total">الإجمالي</span><span id="sumTotal">0 ج.م</span></div></div>
+    <button class="btn btn-primary btn-block" onclick="openCheckout()" data-ar="المتابعة لإتمام الطلب" data-en="Continue to checkout">المتابعة لإتمام الطلب <span>←</span></button>
+  </div>
+</aside>
+
+<!-- Checkout -->
+<div class="modal" id="checkoutModal" onclick="if(event.target===this)closeModal('checkoutModal')">
+  <div class="modal-dialog checkout-dialog"><button class="modal-close" onclick="closeModal('checkoutModal')" aria-label="إغلاق">&times;</button><div class="modal-eyebrow">ONE LAST STEP</div><h2 class="modal-title" data-ar="بيانات الشحن والتوصيل" data-en="Shipping details">بيانات الشحن والتوصيل</h2>
+    <form id="checkoutForm" onsubmit="submitOrder(event)">
+      <div class="form-row"><div class="form-group"><label data-ar="الاسم بالكامل *" data-en="Full name *">الاسم بالكامل *</label><input required name="customer_name" placeholder="محمد أحمد"></div><div class="form-group"><label data-ar="رقم الموبايل *" data-en="Mobile number *">رقم الموبايل *</label><input required name="customer_phone" type="tel" placeholder="01012345678"></div></div>
+      <div class="form-group"><label data-ar="البريد الإلكتروني (اختياري)" data-en="Email (optional)">البريد الإلكتروني (اختياري)</label><input name="customer_email" type="email" placeholder="name@example.com"></div>
+      <div class="form-group">
+        <label data-ar="المحافظة *" data-en="Governorate *">المحافظة *</label>
+        <select required id="checkoutGovernorate" name="governorate" onchange="onCheckoutGovernorateChange(this.value)">
+          <option value="" disabled selected data-ar="اختر المحافظة" data-en="Select governorate">اختر المحافظة</option>
+          <option value="القاهرة">القاهرة (125 ج.م)</option>
+          <option value="الجيزة">الجيزة (125 ج.م)</option>
+          <option value="الإسكندرية">الإسكندرية (125 ج.م)</option>
+          <option value="القليوبية">القليوبية (135 ج.م)</option>
+          <option value="الدقهلية">الدقهلية (135 ج.م)</option>
+          <option value="الشرقية">الشرقية (135 ج.م)</option>
+          <option value="المنوفية">المنوفية (135 ج.م)</option>
+          <option value="الغربية">الغربية (135 ج.م)</option>
+          <option value="البحيرة">البحيرة (135 ج.م)</option>
+          <option value="كفر الشيخ">كفر الشيخ (135 ج.م)</option>
+          <option value="دمياط">دمياط (135 ج.م)</option>
+          <option value="بورسعيد">بورسعيد (135 ج.م)</option>
+          <option value="الإسماعيلية">الإسماعيلية (135 ج.م)</option>
+          <option value="السويس">السويس (135 ج.م)</option>
+          <option value="بني سويف">بني سويف (135 ج.م)</option>
+          <option value="الفيوم">الفيوم (135 ج.م)</option>
+          <option value="المنيا">المنيا (135 ج.م)</option>
+          <option value="أسيوط">أسيوط (135 ج.م)</option>
+          <option value="سوهاج">سوهاج (135 ج.م)</option>
+          <option value="قنا">قنا (135 ج.م)</option>
+          <option value="الأقصر">الأقصر (135 ج.م)</option>
+          <option value="أسوان">أسوان (135 ج.م)</option>
+          <option value="البحر الأحمر">البحر الأحمر (135 ج.م)</option>
+          <option value="شمال سيناء">شمال سيناء (135 ج.م)</option>
+          <option value="جنوب سيناء">جنوب سيناء (135 ج.م)</option>
+          <option value="مطروح">مطروح (135 ج.م)</option>
+          <option value="الوادي الجديد">الوادي الجديد (135 ج.م)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label data-ar="العنوان بالتفصيل *" data-en="Detailed address *">العنوان بالتفصيل *</label>
+        <textarea required name="address_line" rows="2" 
+                  placeholder="اكتب عنوانك بالتفصيل هنا (المنطقة، الشارع، رقم العمارة، رقم الشقة، علامة مميزة)"
+                  data-placeholder-ar="اكتب عنوانك بالتفصيل هنا (المنطقة، الشارع، رقم العمارة، رقم الشقة، علامة مميزة)"
+                  data-placeholder-en="Enter detailed address here (Area, street, building, apartment, landmark)"></textarea>
+      </div>
+
+      <div class="form-group"><label data-ar="ملاحظات إضافية للتوصيل" data-en="Delivery notes">ملاحظات إضافية للتوصيل</label><input name="address_notes" placeholder="ملاحظات للمندوب..."></div>
+      <div class="payment-method-box"><div class="method-icon">✦</div><div><div class="method-title" data-ar="الدفع عند الاستلام" data-en="Cash on delivery">الدفع عند الاستلام</div><div class="method-desc" data-ar="عاين طلبك وادفع عند وصوله." data-en="Inspect your order and pay on delivery.">عاين طلبك وادفع عند وصوله.</div></div><span class="method-check">✓</span></div>
+      <button type="submit" class="btn btn-primary btn-block" id="submitOrderBtn" data-ar="تأكيد الطلب الآن" data-en="Confirm order"><span class="button-label">تأكيد الطلب الآن</span> <span>←</span></button>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="successModal"><div class="modal-dialog success-dialog"><div class="success-badge">✓</div><div class="modal-eyebrow">ORDER RECEIVED</div><h2 data-ar="طلبك في الطريق!" data-en="Your order is on the way!">طلبك في الطريق!</h2><p class="success-order-num"><span data-ar="رقم الطلب:" data-en="Order number:">رقم الطلب:</span> <strong id="successOrderNo"></strong></p><p class="success-notice" data-ar="تم تسجيل طلبك بنجاح. هيتواصل معك فريق MCL هاتفيًا لتأكيد التفاصيل قبل الشحن." data-en="Your order has been received. The MCL team will call you to confirm the details before shipping.">تم تسجيل طلبك بنجاح. هيتواصل معك فريق MCL هاتفيًا لتأكيد التفاصيل قبل الشحن.</p><button class="btn btn-primary" onclick="finishOrder()" data-ar="متابعة التسوق" data-en="Continue shopping">متابعة التسوق <span>←</span></button></div></div>
+
+<div class="toast-notification" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="store.js"></script>
+</body>
+</html>
