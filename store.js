@@ -81,6 +81,41 @@ const getElem = (id) => document.getElementById(id);
 
 const tr = (ar, en) => MCL_LANG === 'en' ? en : ar;
 
+function initWinterCountdown() {
+  const countdown = getElem('winterCountdown');
+  if (!countdown) return;
+
+  const targetTime = Date.parse(countdown.dataset.targetTime);
+  const hoursEl = getElem('winterHours');
+  const minutesEl = getElem('winterMinutes');
+  const secondsEl = getElem('winterSeconds');
+  if (!Number.isFinite(targetTime)) {
+    document.documentElement.classList.remove('winter-drop-active');
+    countdown.hidden = true;
+    return;
+  }
+
+  let intervalId;
+  const updateCountdown = () => {
+    const remaining = targetTime - Date.now();
+    if (remaining <= 0) {
+      countdown.hidden = true;
+      document.documentElement.classList.remove('winter-drop-active');
+      clearInterval(intervalId);
+      return;
+    }
+
+    hoursEl.textContent = String(Math.floor(remaining / 3600000)).padStart(2, '0');
+    minutesEl.textContent = String(Math.floor((remaining % 3600000) / 60000)).padStart(2, '0');
+    secondsEl.textContent = String(Math.floor((remaining % 60000) / 1000)).padStart(2, '0');
+  };
+
+  updateCountdown();
+  if (!countdown.hidden) {
+    intervalId = setInterval(updateCountdown, 1000);
+  }
+}
+
 function showToast(message) {
   const toast = getElem('toast');
   if (!toast) return;
@@ -1030,5 +1065,6 @@ function toggleLanguage() {
 }
 
 // تشغيل المتجر عند جاهزية الصفحة
+document.addEventListener('DOMContentLoaded', initWinterCountdown);
 document.addEventListener('DOMContentLoaded', initStore);
 document.addEventListener('DOMContentLoaded', () => applyLanguage(MCL_LANG));
