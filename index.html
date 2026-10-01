@@ -149,31 +149,43 @@
   </section>
 </main>
 
-<footer class="site-footer">
-  <div class="container footer-top">
-    <div class="footer-brand">
-      <a class="logo" href="#" onclick="goHome(event)" aria-label="MCL الرئيسية" data-aria-ar="MCL الرئيسية" data-aria-en="MCL home">
-        <span class="logo-mark">M</span><span class="logo-word">MCL</span>
-      </a>
-      <p data-ar-html="Modern everyday wear.<br>مصمم في مصر، معمول ليك." data-en-html="Modern everyday wear.<br>Designed in Egypt, made for you.">Modern everyday wear.<br>مصمم في مصر، معمول ليك.</p>
-    </div>
-    <div class="footer-links">
-      <div>
-        <span class="footer-heading" data-ar="استكشف" data-en="Explore">استكشف</span>
-        <a href="#products" onclick="scrollToProducts(event)" data-ar="المجموعة" data-en="Collection">المجموعة</a>
-        <a href="#about" data-ar="عن MCL" data-en="About MCL">عن MCL</a>
-      </div>
-      <div>
-        <span class="footer-heading" data-ar="مساعدة" data-en="Help">مساعدة</span>
-        <a href="#products" data-ar="الشحن والتوصيل" data-en="Shipping & Delivery">الشحن والتوصيل</a>
-        <a href="#about" data-ar="تواصل معنا" data-en="Contact us">تواصل معنا</a>
-      </div>
-      <div>
-        <span class="footer-heading" data-ar="تابعنا" data-en="Follow us">تابعنا</span>
-        <a id="socialInstagram" href="https://www.instagram.com/mcl__outfit?stkn=dzJqbjVmOXpieHVk&utm_source=qr" target="_blank" rel="noopener noreferrer">Instagram ↗</a>
-        <a id="socialTiktok" href="https://www.tiktok.com/@mcl_outfit1" target="_blank" rel="noopener noreferrer">TikTok ↗</a>
+<footer class="site-footer" id="footer">
+  <div class="container">
+    <div class="footer-socials" aria-label="Social media">
       
-      </div>
+      <a class="social-circle" id="socialInstagram" href="https://www.instagram.com/mcl__outfit?stkn=dzJqbjVmOXpieHVk&amp;utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.7" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.8" r="1.1" fill="currentColor"/></svg>
+      </a>
+     
+      <a class="social-circle" id="socialTiktok" href="https://www.tiktok.com/@mcl_outfit1" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.6 3h-3.1v12.1a2.6 2.6 0 1 1-2.3-2.58v-3.2a5.8 5.8 0 1 0 5.4 5.78V9a8.1 8.1 0 0 0 4.4 1.3V7.2A5 5 0 0 1 15.6 3Z" fill="currentColor"/></svg>
+      </a>
+    </div>
+
+    <div class="footer-content">
+      <nav class="footer-quicklinks" aria-label="Quick links" data-aria-ar="روابط سريعة" data-aria-en="Quick links">
+        <h2 data-ar="روابط سريعة" data-en="Quick Links">Quick Links</h2>
+        <a href="#about" data-ar="عنّا" data-en="About us">About us</a>
+        <a href="#about" data-ar="تواصل معنا" data-en="Contact us">Contact us</a>
+        <a href="#about" data-ar="الأسئلة الشائعة" data-en="FAQs">FAQs</a>
+        <a href="#products" data-ar="الشحن والتوصيل" data-en="Shipping &amp; Delivery">Shipping &amp; Delivery</a>
+        <a href="#products" data-ar="الاسترجاع والاستبدال" data-en="Return &amp; Exchange">Return &amp; Exchange</a>
+        <a href="#footer" data-ar="سياسة الخصوصية" data-en="Privacy Policy">Privacy Policy</a>
+      </nav>
+
+      <section class="footer-newsletter" aria-labelledby="newsletterTitle">
+        <h2 id="newsletterTitle" data-ar="اشترك ليصلك كل جديد وعروض حصرية!" data-en="Join For Exclusive Email Offers!">Join For Exclusive Email Offers!</h2>
+        <p data-ar="اكتب بريدك الإلكتروني ليصلك أحدث العروض والمنتجات الجديدة." data-en="Enter your email to receive the latest offers and new products.">Enter your email to receive the latest offers and new products.</p>
+        <form class="newsletter-form" onsubmit="handleNewsletterSubscribe(event)">
+          <label class="sr-only" for="newsletterEmail" data-ar="عنوان البريد الإلكتروني" data-en="Email address">Email address</label>
+          <input id="newsletterEmail" type="email" autocomplete="email" required placeholder="Enter email address" data-placeholder-ar="أدخل بريدك الإلكتروني" data-placeholder-en="Enter email address">
+          <button type="submit" data-ar="اشترك" data-en="Subscribe">Subscribe</button>
+          <a class="back-to-top" href="#" onclick="goHome(event)" aria-label="العودة إلى أعلى الصفحة" data-aria-ar="العودة إلى أعلى الصفحة" data-aria-en="Back to top">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </form>
+        <p class="newsletter-message" id="newsletterMessage" role="status" hidden data-ar="الاشتراك بالبريد الإلكتروني هيتفعّل قريبًا." data-en="Email subscriptions will be available soon.">Email subscriptions will be available soon.</p>
+      </section>
     </div>
   </div>
   <div class="container footer-bottom">
@@ -260,7 +272,7 @@
                   data-placeholder-ar="اكتب عنوانك بالتفصيل هنا (المنطقة، الشارع، رقم العمارة، رقم الشقة، علامة مميزة)"
                   data-placeholder-en="Enter detailed address here (Area, street, building, apartment, landmark)"></textarea>
       </div>
-      <div class="form-row"><div class="form-group"><label data-ar="رقم العمارة" data-en="Building">رقم العمارة</label><input name="building_number" placeholder="12"></div><div class="form-group"><label data-ar="رقم الشقة" data-en="Apartment">رقم الشقة</label><input name="apartment_number" placeholder="4"></div><div class="form-group"><label data-ar="الدور" data-en="Floor">الدور</label><input name="floor_number" placeholder="2"></div></div>
+
       <div class="form-group"><label data-ar="ملاحظات إضافية للتوصيل" data-en="Delivery notes">ملاحظات إضافية للتوصيل</label><input name="address_notes" placeholder="ملاحظات للمندوب..."></div>
       <div class="payment-method-box"><div class="method-icon">✦</div><div><div class="method-title" data-ar="الدفع عند الاستلام" data-en="Cash on delivery">الدفع عند الاستلام</div><div class="method-desc" data-ar="عاين طلبك وادفع عند وصوله." data-en="Inspect your order and pay on delivery.">عاين طلبك وادفع عند وصوله.</div></div><span class="method-check">✓</span></div>
       <button type="submit" class="btn btn-primary btn-block" id="submitOrderBtn" data-ar="تأكيد الطلب الآن" data-en="Confirm order"><span class="button-label">تأكيد الطلب الآن</span> <span>←</span></button>
