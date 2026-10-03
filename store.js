@@ -14,72 +14,16 @@ const STORE_CONFIG = {
   SHIPPING_CAIRO_GIZA: 125,      // مصاريف الشحن داخل القاهرة والجيزة بالجنيه
   SHIPPING_OTHER_GOVS: 135,      // مصاريف الشحن لبقية المحافظات بالجنيه
   BUY_TWO_DISCOUNT_PERCENT: 10,  // خصم 10٪ عند شراء قطعتين أو أكثر
-  LOW_STOCK_LIMIT: 5,            // حد التنبيه بانخفاض المخزون
-  ADMIN_EMAIL: 'admin@example.com' // ← اكتب هنا إيميل الأدمن اللي هيوصله الطلبات
+  LOW_STOCK_LIMIT: 5             // حد التنبيه بانخفاض المخزون
 };
-
-// سعر القطعة = نفس السعر المعروض في الصفحة الرئيسية
-function getUnitPrice(prod) {
-  return Number(prod.selling_price) || 0;
-}
-
-// تحديث أسعار السلة المحفوظة لتطابق السعر الحالي المعروض
-function syncCartPrices() {
-  if (typeof cart === 'undefined' || !Array.isArray(cart)) return;
-  let changed = false;
-  cart.forEach(item => {
-    const p = (productsList || []).find(x => x.id === item.product_id);
-    if (p) {
-      const price = getUnitPrice(p);
-      if (item.unit_price !== price) { item.unit_price = price; changed = true; }
-    }
-  });
-  if (changed) { try { persistCart(); } catch (e) {} }
-}
-
-// إرسال تفاصيل الطلب على إيميل الأدمن
-async function sendOrderEmailToAdmin(order, items) {
-  if (!STORE_CONFIG.ADMIN_EMAIL || STORE_CONFIG.ADMIN_EMAIL === 'admin@example.com') {
-    console.warn('ADMIN_EMAIL غير مضبوط - لم يتم إرسال إيميل الطلب');
-    return;
-  }
-  const lines = items.map(i =>
-    `- ${i.product_name}${i.color_name ? ' / ' + i.color_name : ''}${i.size_name ? ' / ' + i.size_name : ''} × ${i.quantity} = ${i.unit_price * i.quantity} ج.م`
-  ).join('\n');
-  try {
-    const res = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(STORE_CONFIG.ADMIN_EMAIL), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        _subject: `طلب جديد ${order.order_number ? '#' + order.order_number : ''} - MCL`,
-        _template: 'table',
-        _captcha: 'false',
-        'رقم الطلب': order.order_number || order.id || '',
-        'الاسم': order.customer_name || '',
-        'الموبايل': order.customer_phone || '',
-        'الإيميل': order.customer_email || '',
-        'المحافظة': order.governorate || order.shipping_governorate || '',
-        'العنوان': order.shipping_address || order.address || '',
-        'المنتجات': lines,
-        'المجموع': order.subtotal,
-        'الخصم': order.discount_amount,
-        'الشحن': order.shipping_cost,
-        'الإجمالي': order.total_amount
-      })
-    });
-    if (!res.ok) console.error('فشل إرسال إيميل الطلب', res.status, await res.text());
-  } catch (err) {
-    console.error('فشل إرسال إيميل الطلب', err);
-  }
-}
 
 let selectedGovernorate = '';
 
 function getShippingCost(governorate, subtotal) {
   if (!governorate) return null;
   const gov = String(governorate).trim();
-  const isCairoOrGiza = ['القاهرة', 'الجيزة', 'Cairo', 'Giza'].some(g => gov.includes(g));
-  return isCairoOrGiza ? STORE_CONFIG.SHIPPING_CAIRO_GIZA : STORE_CONFIG.SHIPPING_OTHER_GOVS;
+  const hasReducedShipping = ['القاهرة', 'الجيزة', 'الإسكندرية', 'Cairo', 'Giza', 'Alexandria'].some(g => gov.includes(g));
+  return hasReducedShipping ? STORE_CONFIG.SHIPPING_CAIRO_GIZA : STORE_CONFIG.SHIPPING_OTHER_GOVS;
 }
 
 function onGovernorateChange(val) {
@@ -94,6 +38,10 @@ function onGovernorateChange(val) {
     modalSelect.value = selectedGovernorate;
   }
   calculateTotals();
+}
+
+function onCheckoutGovernorateChange(val) {
+  onGovernorateChange(val);
 }
 
 const MCL_FALLBACK_IMAGES = {
@@ -196,6 +144,11 @@ function closeModal(id) {
       document.body.classList.remove('no-scroll');
     }
   }
+}
+
+function openReturnPolicy(event) {
+  if (event) event.preventDefault();
+  openModal('returnPolicyModal');
 }
 
 function goHome(e) {
@@ -568,7 +521,7 @@ function addToCart() {
     sizeName = activeSize ? activeSize.name : null;
   }
 
-  const unitPrice = getUnitPrice(prod);
+  const unitPrice = variant ? (variant.price ?? prod.selling_price) : prod.selling_price;
   const unitCost = variant ? (variant.cost_price ?? prod.cost_price ?? 0) : (prod.cost_price ?? 0);
   const sku = variant ? variant.sku : prod.sku;
   const maxAvailable = variant ? variant.stock_quantity : prod.stock_quantity;
@@ -693,7 +646,6 @@ function removeCartItem(index) {
 }
 
 function calculateTotals() {
-  syncCartPrices();
   const subtotal = cart.reduce((acc, i) => acc + (i.unit_price * i.quantity), 0);
   const totalQuantity = cart.reduce((acc, i) => acc + (Number(i.quantity) || 0), 0);
   let discountAmount = 0;
@@ -764,6 +716,9 @@ function calculateTotals() {
   }
 
   // 2. تحديث ملخص نافذة الدفع (Checkout Modal)
+  const checkoutSummary = getElem('checkoutSummary');
+  if (checkoutSummary) checkoutSummary.hidden = shippingCost === null;
+
   const chkSubtotal = getElem('checkoutSubtotal');
   if (chkSubtotal) chkSubtotal.textContent = formatEGP(subtotal);
 
@@ -981,28 +936,6 @@ async function submitOrder(e) {
 
     if (oError) throw oError;
 
-    // استدعاء Edge Function لإرسال إشعار الطلب بالبريد (فشلها لا يفشل الطلب)
-    try {
-      console.log('📧 جاري استدعاء send-order-email للطلب:', newOrder.id);
-      const { data: emailResult, error: emailError } =
-        await supabaseClient.functions.invoke('send-order-email', {
-          body: {
-            order_id: newOrder.id
-          }
-        });
-      console.log('📧 نتيجة send-order-email:', {
-        emailResult,
-        emailError
-      });
-      if (emailError) {
-        console.error('فشل إرسال إشعار الطلب بالبريد:', emailError);
-      } else {
-        console.log('تم استدعاء send-order-email بنجاح:', emailResult);
-      }
-    } catch (emailErr) {
-      console.error('فشل إرسال إشعار الطلب بالبريد:', emailErr);
-    }
-
     // 2. إدراج عناصر الطلب في جدول order_items (Snapshot للأسعار)
     const itemsPayload = cart.map(item => ({
       order_id: newOrder.id,
@@ -1057,10 +990,7 @@ async function submitOrder(e) {
         .eq('id', appliedCouponData.id);
     }
 
-    // 5. إرسال الطلب على إيميل الأدمن
-    await sendOrderEmailToAdmin({ ...orderPayload, ...newOrder }, cart.map(i => ({ ...i })));
-
-    // 6. تصفير السلة وإنهاء الطلب
+    // 5. تصفير السلة وإنهاء الطلب
     cart = [];
     persistCart();
     appliedCouponData = null;
