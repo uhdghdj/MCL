@@ -173,8 +173,14 @@
 
 <footer class="site-footer" id="footer">
   <div class="container">
-    <div class="footer-socials" aria-label="Social media">
-      
+    <a href="https://wa.me/201041788066" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+  <span class="social-circle social-circle-static" role="img">
+    
+     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2.02a9.94 9.94 0 0 0-8.52 15.15L2 22l4.97-1.5a9.94 9.94 0 1 0 5.07-18.48Zm0 18.05a8.08 8.08 0 0 1-4.12-1.13l-.3-.18-2.95.89.9-2.87-.2-.3a8.1 8.1 0 1 1 6.67 3.59Zm4.45-6.08c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.43-1.34-1.67-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.47-.4-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.58.18 1.11.16 1.53.1.47-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28Z" fill="currentColor"/>
+  
+</svg>
+  </span>
+</a>
       <a class="social-circle" id="socialInstagram" href="https://www.instagram.com/mcl__outfit?stkn=dzJqbjVmOXpieHVk&amp;utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.7" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.8" r="1.1" fill="currentColor"/></svg>
       </a>
@@ -191,8 +197,8 @@
         <a href="#about" data-ar="تواصل معنا" data-en="Contact us">Contact us</a>
         <a href="#about" data-ar="الأسئلة الشائعة" data-en="FAQs">FAQs</a>
         <a href="#products" data-ar="الشحن والتوصيل" data-en="Shipping &amp; Delivery">Shipping &amp; Delivery</a>
-        <a href="#products" data-ar="الاسترجاع والاستبدال" data-en="Return &amp; Exchange">Return &amp; Exchange</a>
-        <a href="#footer" data-ar="سياسة الخصوصية" data-en="Privacy Policy">Privacy Policy</a>
+        <a href="#returnPolicyModal" onclick="openReturnPolicy(event)" data-ar="سياسة الاسترجاع" data-en="Returns Policy">Returns Policy</a>
+        
       </nav>
 
       <section class="footer-newsletter" aria-labelledby="newsletterTitle">
@@ -215,6 +221,19 @@
     <p><span data-ar="صُنع لأجلك كل يوم" data-en="Made for your everyday">صُنع لأجلك كل يوم</span> <span>✳</span></p>
   </div>
 </footer>
+
+<div class="modal" id="returnPolicyModal" onclick="if(event.target===this)closeModal('returnPolicyModal')">
+  <section class="modal-dialog policy-dialog" role="dialog" aria-modal="true" aria-labelledby="returnPolicyTitle">
+    <button class="modal-close" onclick="closeModal('returnPolicyModal')" aria-label="إغلاق">&times;</button>
+    <div class="modal-eyebrow" data-ar="الاسترجاع والاسترداد" data-en="RETURNS &amp; REFUNDS">الاسترجاع والاسترداد</div>
+    <h2 class="modal-title" id="returnPolicyTitle" data-ar="سياسة الاسترجاع" data-en="Returns Policy">سياسة الاسترجاع</h2>
+    <ul class="return-policy-list">
+      <li data-ar="لا تتوفر معاينة للمنتج عند الاستلام." data-en="Product inspection is not available at delivery.">لا تتوفر معاينة للمنتج عند الاستلام.</li>
+      <li data-ar="إذا كانت هناك مشكلة في المنتج، سيصلك مندوب آخر لاستلام الشحنة." data-en="If there is an issue with the product, another courier will come to collect the shipment.">إذا كانت هناك مشكلة في المنتج، سيصلك مندوب آخر لاستلام الشحنة.</li>
+      <li data-ar="يتم تحويل المبلغ المسترد عبر InstaPay أو Vodafone Cash." data-en="Refunds are sent via InstaPay or Vodafone Cash.">يتم تحويل المبلغ المسترد عبر InstaPay أو Vodafone Cash.</li>
+    </ul>
+  </section>
+</div>
 
 <!-- Product details -->
 <div class="modal" id="productModal" onclick="if(event.target===this)closeModal('productModal')">
@@ -287,6 +306,13 @@
         </select>
       </div>
 
+      <div class="order-summary checkout-order-summary" id="checkoutSummary" hidden aria-live="polite">
+        <div class="summary-line"><span data-ar="المجموع" data-en="Subtotal">المجموع</span><span id="checkoutSubtotal">0 ج.م</span></div>
+        <div class="summary-line discount-line" id="checkoutDiscountLine" style="display:none;"><span data-ar="الخصم" data-en="Discount">الخصم</span><span id="checkoutDiscount">- 0 ج.م</span></div>
+        <div class="summary-line"><span data-ar="الشحن" data-en="Shipping">الشحن</span><span id="checkoutShipping">اختر المحافظة</span></div>
+        <div class="summary-line total-line"><span data-ar="الإجمالي" data-en="Total">الإجمالي</span><span id="checkoutTotal">0 ج.م</span></div>
+      </div>
+
       <div class="form-group">
         <label data-ar="العنوان بالتفصيل *" data-en="Detailed address *">العنوان بالتفصيل *</label>
         <textarea required name="address_line" rows="2" 
@@ -296,7 +322,7 @@
       </div>
 
       <div class="form-group"><label data-ar="ملاحظات إضافية للتوصيل" data-en="Delivery notes">ملاحظات إضافية للتوصيل</label><input name="address_notes" placeholder="ملاحظات للمندوب..."></div>
-      <div class="payment-method-box"><div class="method-icon">✦</div><div><div class="method-title" data-ar="الدفع عند الاستلام" data-en="Cash on delivery">الدفع عند الاستلام</div><div class="method-desc" data-ar="عاين طلبك وادفع عند وصوله." data-en="Inspect your order and pay on delivery.">عاين طلبك وادفع عند وصوله.</div></div><span class="method-check">✓</span></div>
+      <div class="payment-method-box"><div class="method-icon">✦</div><div><div class="method-title" data-ar="الدفع عند الاستلام" data-en="Cash on delivery">الدفع عند الاستلام</div><div class="method-desc" data-ar="ادفع عند وصوله." data-en="Pay when your order arrives.">ادفع عند وصوله.</div></div><span class="method-check">✓</span></div>
       <button type="submit" class="btn btn-primary btn-block" id="submitOrderBtn" data-ar="تأكيد الطلب الآن" data-en="Confirm order"><span class="button-label">تأكيد الطلب الآن</span> <span>←</span></button>
     </form>
   </div>
