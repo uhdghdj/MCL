@@ -936,6 +936,30 @@ async function submitOrder(e) {
 
     if (oError) throw oError;
 
+    console.log('📧 جاري استدعاء send-order-email للطلب:', newOrder.id);
+    try {
+      const { data: emailResult, error: emailError } =
+        await supabaseClient.functions.invoke('send-order-email', {
+          body: {
+            order_id: newOrder.id
+          }
+        });
+
+      console.log('📧 نتيجة send-order-email:', {
+        emailResult,
+        emailError
+      });
+
+      if (emailError) {
+        console.error('فشل إرسال إشعار الطلب بالبريد:', emailError);
+      } else {
+        console.log('تم استدعاء send-order-email بنجاح:', emailResult);
+      }
+    } catch (emailInvokeError) {
+      // لا تجعل فشل استدعاء البريد يمنع متابعة إنشاء الطلب.
+      console.error('فشل إرسال إشعار الطلب بالبريد:', emailInvokeError);
+    }
+
     // 2. إدراج عناصر الطلب في جدول order_items (Snapshot للأسعار)
     const itemsPayload = cart.map(item => ({
       order_id: newOrder.id,
