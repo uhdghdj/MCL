@@ -1,4 +1,5 @@
 
+
 /* ==========================================================
    MCL STORE - LOGIC & SUPABASE INTEGRATION
    ========================================================== */
@@ -13,7 +14,9 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLI
 const STORE_CONFIG = {
   SHIPPING_CAIRO_GIZA: 125,      // مصاريف الشحن داخل القاهرة والجيزة بالجنيه
   SHIPPING_OTHER_GOVS: 135,      // مصاريف الشحن لبقية المحافظات بالجنيه
-  BUY_TWO_DISCOUNT_PERCENT: 10,  // خصم 10٪ عند شراء قطعتين أو أكثر
+  BUY_TWO_DISCOUNT_PERCENT: 10,  // يتم تحديثه من الداشبورد (store_settings)
+  PROMO_MIN_QTY: 2,
+  PROMO_ENABLED: true,
   LOW_STOCK_LIMIT: 5             // حد التنبيه بانخفاض المخزون
 };
 
@@ -668,9 +671,9 @@ function calculateTotals() {
       }
       discountAmount = Math.min(discountAmount, eligibleSub);
     }
-  } else if (totalQuantity >= 2) {
+  } else if (STORE_CONFIG.PROMO_ENABLED && STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT > 0 && totalQuantity >= STORE_CONFIG.PROMO_MIN_QTY) {
     discountAmount = subtotal * (STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT / 100);
-    promotionCode = 'BUY_2_GET_10';
+    promotionCode = `BUY_${STORE_CONFIG.PROMO_MIN_QTY}_GET_${STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT}`;
   }
 
   const shippingCost = getShippingCost(selectedGovernorate, subtotal);
@@ -706,7 +709,7 @@ function calculateTotals() {
       const discountLabel = getElem('discountLabel');
       if (discountLabel) {
         discountLabel.textContent = promotionCode
-          ? tr('عرض قطعتين (خصم 10٪)', 'Buy 2 offer (10% off)')
+          ? tr(`عرض ${STORE_CONFIG.PROMO_MIN_QTY} قطع (خصم ${STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT}٪)`, `Buy ${STORE_CONFIG.PROMO_MIN_QTY} offer (${STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT}% off)`)
           : tr('الخصم', 'Discount');
       }
       getElem('sumDiscount').textContent = `- ${formatEGP(discountAmount)}`;
@@ -1103,4 +1106,30 @@ function toggleLanguage() {
 // تشغيل المتجر عند جاهزية الصفحة
 document.addEventListener('DOMContentLoaded', initWinterCountdown);
 document.addEventListener('DOMContentLoaded', initStore);
+document.addEventListener('DOMContentLoaded', loadPromoBanner);
+
+// تحميل خصم البانر الأخضر من الداشبورد
+async function loadPromoBanner() {
+  try {
+    const { data } = await supabaseClient.from('store_settings').select('value').eq('key', 'promo_banner').maybeSingle();
+    if (!data || !data.value) return;
+    const v = data.value;
+    STORE_CONFIG.PROMO_ENABLED = v.enabled !== false;
+    STORE_CONFIG.PROMO_MIN_QTY = Number(v.min_qty) || 2;
+    STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT = Number(v.percent) || 0;
+    const el = document.getElementById('promoBannerText');
+    if (el) {
+      const dot = el.nextElementSibling;
+      if (!STORE_CONFIG.PROMO_ENABLED || !(v.text_ar || v.text_en)) {
+        el.style.display = 'none';
+        if (dot && dot.classList.contains('announcement-dot')) dot.style.display = 'none';
+      } else {
+        el.setAttribute('data-ar', v.text_ar || v.text_en);
+        el.setAttribute('data-en', v.text_en || v.text_ar);
+        el.textContent = (typeof MCL_LANG !== 'undefined' && MCL_LANG === 'en') ? (v.text_en || v.text_ar) : (v.text_ar || v.text_en);
+      }
+    }
+    if (typeof calculateTotals === 'function') calculateTotals();
+  } catch (e) { console.error('promo banner:', e); }
+}
 document.addEventListener('DOMContentLoaded', () => applyLanguage(MCL_LANG));
