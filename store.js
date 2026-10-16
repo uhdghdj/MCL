@@ -14,7 +14,8 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLI
 const STORE_CONFIG = {
   SHIPPING_CAIRO_GIZA: 125,      // مصاريف الشحن داخل القاهرة والجيزة بالجنيه
   SHIPPING_OTHER_GOVS: 135,      // مصاريف الشحن لبقية المحافظات بالجنيه
-  BUY_TWO_DISCOUNT_PERCENT: 10,  // يتم تحديثه من الداشبورد (store_settings)
+  PROMO_DISCOUNT_TYPE: "percentage",
+  PROMO_DISCOUNT_VALUE: 10,  // يتم تحديثه من الداشبورد (store_settings)
   PROMO_MIN_QTY: 2,
   PROMO_ENABLED: true,
   LOW_STOCK_LIMIT: 5             // حد التنبيه بانخفاض المخزون
@@ -671,9 +672,12 @@ function calculateTotals() {
       }
       discountAmount = Math.min(discountAmount, eligibleSub);
     }
-  } else if (STORE_CONFIG.PROMO_ENABLED && STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT > 0 && totalQuantity >= STORE_CONFIG.PROMO_MIN_QTY) {
-    discountAmount = subtotal * (STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT / 100);
-    promotionCode = `BUY_${STORE_CONFIG.PROMO_MIN_QTY}_GET_${STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT}`;
+  } else if (STORE_CONFIG.PROMO_ENABLED && STORE_CONFIG.PROMO_DISCOUNT_VALUE > 0 && totalQuantity >= STORE_CONFIG.PROMO_MIN_QTY) {
+    discountAmount = STORE_CONFIG.PROMO_DISCOUNT_TYPE === "fixed"
+      ? STORE_CONFIG.PROMO_DISCOUNT_VALUE
+      : subtotal * (STORE_CONFIG.PROMO_DISCOUNT_VALUE / 100);
+    discountAmount = Math.min(subtotal, Math.max(0, discountAmount));
+    promotionCode = `BUY_${STORE_CONFIG.PROMO_MIN_QTY}_GET_${STORE_CONFIG.PROMO_DISCOUNT_VALUE}_${STORE_CONFIG.PROMO_DISCOUNT_TYPE === "fixed" ? "EGP" : "PERCENT"}`;
   }
 
   const shippingCost = getShippingCost(selectedGovernorate, subtotal);
@@ -709,7 +713,7 @@ function calculateTotals() {
       const discountLabel = getElem('discountLabel');
       if (discountLabel) {
         discountLabel.textContent = promotionCode
-          ? tr(`عرض ${STORE_CONFIG.PROMO_MIN_QTY} قطع (خصم ${STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT}٪)`, `Buy ${STORE_CONFIG.PROMO_MIN_QTY} offer (${STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT}% off)`)
+          ? tr(`عرض ${STORE_CONFIG.PROMO_MIN_QTY} قطع (خصم ${STORE_CONFIG.PROMO_DISCOUNT_TYPE === "fixed" ? formatEGP(STORE_CONFIG.PROMO_DISCOUNT_VALUE) : STORE_CONFIG.PROMO_DISCOUNT_VALUE + "٪"})`, `Buy ${STORE_CONFIG.PROMO_MIN_QTY} offer (${STORE_CONFIG.PROMO_DISCOUNT_TYPE === "fixed" ? formatEGP(STORE_CONFIG.PROMO_DISCOUNT_VALUE) : STORE_CONFIG.PROMO_DISCOUNT_VALUE + "%"} off)`)
           : tr('الخصم', 'Discount');
       }
       getElem('sumDiscount').textContent = `- ${formatEGP(discountAmount)}`;
@@ -1115,8 +1119,13 @@ async function loadPromoBanner() {
     if (!data || !data.value) return;
     const v = data.value;
     STORE_CONFIG.PROMO_ENABLED = v.enabled !== false;
-    STORE_CONFIG.PROMO_MIN_QTY = Number(v.min_qty) || 2;
-    STORE_CONFIG.BUY_TWO_DISCOUNT_PERCENT = Number(v.percent) || 0;
+    const minQty = Number(v.min_qty);
+    STORE_CONFIG.PROMO_MIN_QTY = Number.isInteger(minQty) && minQty >= 1 ? minQty : 2;
+    STORE_CONFIG.PROMO_DISCOUNT_TYPE = v.discount_type === "fixed" ? "fixed" : "percentage";
+    const discountValue = Number(v.discount_value ?? v.percent ?? 0);
+    STORE_CONFIG.PROMO_DISCOUNT_VALUE = Number.isFinite(discountValue)
+      ? Math.max(0, STORE_CONFIG.PROMO_DISCOUNT_TYPE === "percentage" ? Math.min(100, discountValue) : discountValue)
+      : 0;
     const el = document.getElementById('promoBannerText');
     if (el) {
       const dot = el.nextElementSibling;
@@ -1124,6 +1133,8 @@ async function loadPromoBanner() {
         el.style.display = 'none';
         if (dot && dot.classList.contains('announcement-dot')) dot.style.display = 'none';
       } else {
+        el.style.display = "";
+        if (dot && dot.classList.contains("announcement-dot")) dot.style.display = "";
         el.setAttribute('data-ar', v.text_ar || v.text_en);
         el.setAttribute('data-en', v.text_en || v.text_ar);
         el.textContent = (typeof MCL_LANG !== 'undefined' && MCL_LANG === 'en') ? (v.text_en || v.text_ar) : (v.text_ar || v.text_en);
