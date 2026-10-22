@@ -5,8 +5,8 @@
    ========================================================== */
 
 // 1. إعداد الاتصال بمشروع Supabase
-const SUPABASE_URL = 'https://lpunsnvraeylwuugjmwl.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_vcPbI8K3XNmrLn99ZIT16w_p5K36USH';
+const SUPABASE_URL = 'https://fhgkfnidnotabwvsmlcd.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_MTAudVvpxTb7g7Gxz85EJw_mDcw4RJY';
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
