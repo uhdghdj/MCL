@@ -247,7 +247,7 @@
       <div class="pm-price-wrap" id="pmPrice"></div>
       <p class="pm-description" id="pmDesc"></p>
       <div class="pm-section" id="pmColorsWrap"><label class="pm-label"><span data-ar="اللون:" data-en="Color:">اللون:</span> <span id="selectedColorName" class="active-label"></span></label><div class="color-options" id="pmColors"></div></div>
-      <div class="pm-section" id="pmSizesWrap"><label class="pm-label"><span data-ar="المقاس:" data-en="Size:">المقاس:</span> <span id="selectedSizeName" class="active-label"></span></label><div class="size-options" id="pmSizes"></div></div>
+      <div class="pm-section" id="pmSizesWrap"><label class="pm-label"><span data-ar="المقاس:" data-en="Size:">المقاس:</span> <span id="selectedSizeName" class="active-label"></span></label><div class="size-options" id="pmSizes"></div></div><div class="pm-section size-chart-wrap" id="sizeChartWrap" hidden><button type="button" class="size-chart-link" id="sizeChartBtn" onclick="openSizeChart()" data-ar="دليل المقاسات" data-en="Size Chart">دليل المقاسات</button></div>
       <div class="pm-section"><label class="pm-label" data-ar="الكمية:" data-en="Quantity:">الكمية:</label><div class="quantity-control"><button type="button" onclick="changeQty(-1)">−</button><span id="pmQty">1</span><button type="button" onclick="changeQty(1)">+</button></div></div>
       <div class="stock-status" id="pmStock"></div>
       <button class="btn btn-primary btn-block" id="addToCartBtn" onclick="addToCart()" data-ar="إضافة إلى السلة" data-en="Add to cart">إضافة إلى السلة</button>
@@ -330,6 +330,36 @@
 </div>
 
 <div class="modal" id="successModal"><div class="modal-dialog success-dialog"><div class="success-badge">✓</div><div class="modal-eyebrow">ORDER RECEIVED</div><h2 data-ar="طلبك في الطريق!" data-en="Your order is on the way!">طلبك في الطريق!</h2><p class="success-order-num"><span data-ar="رقم الطلب:" data-en="Order number:">رقم الطلب:</span> <strong id="successOrderNo"></strong></p><p class="success-notice" data-ar="تم تسجيل طلبك بنجاح. هيتواصل معك فريق MCL هاتفيًا لتأكيد التفاصيل قبل الشحن." data-en="Your order has been received. The MCL team will call you to confirm the details before shipping.">تم تسجيل طلبك بنجاح. هيتواصل معك فريق MCL هاتفيًا لتأكيد التفاصيل قبل الشحن.</p><button class="btn btn-primary" onclick="finishOrder()" data-ar="متابعة التسوق" data-en="Continue shopping">متابعة التسوق <span>←</span></button></div></div>
+
+<!-- Size chart (MCL Sweatpants) -->
+<div class="modal" id="sizeChartModal" onclick="if(event.target===this)closeModal('sizeChartModal')">
+  <div class="modal-dialog size-chart-dialog" role="dialog" aria-modal="true" aria-labelledby="sizeChartTitle">
+    <button class="modal-close" onclick="closeModal('sizeChartModal')" aria-label="إغلاق" data-aria-ar="إغلاق" data-aria-en="Close">&times;</button>
+    <div class="modal-eyebrow">MCL SWEATPANTS</div>
+    <h2 class="modal-title" id="sizeChartTitle" data-ar="دليل مقاسات بنطلونات MCL" data-en="MCL SWEATPANTS SIZE CHART">دليل مقاسات بنطلونات MCL</h2>
+    <div class="size-chart-zoom" id="sizeChartZoom" onclick="toggleSizeChartZoom()">
+      <img src="mcl-size-chart-sweatpants.jpg" alt="MCL Sweatpants Size Chart">
+    </div>
+    <p class="size-chart-hint" data-ar="اضغط على الصورة للتكبير ومرّر للتنقل، واضغط مرة أخرى للتصغير." data-en="Tap the image to zoom in, scroll or drag to pan, and tap again to zoom out.">اضغط على الصورة للتكبير ومرّر للتنقل، واضغط مرة أخرى للتصغير.</p>
+    <table class="size-chart-table">
+      <thead>
+        <tr>
+          <th data-ar="المقاس" data-en="SIZE">المقاس</th>
+          <th data-ar="الخصر (سم)" data-en="WAIST (CM)">الخصر (سم)</th>
+          <th data-ar="الطول (سم)" data-en="LENGTH (CM)">الطول (سم)</th>
+          <th data-ar="الفخذ (سم)" data-en="THIGH (CM)">الفخذ (سم)</th>
+          <th data-ar="فتحة الرجل (سم)" data-en="LEG OPENING (CM)">فتحة الرجل (سم)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>M</td><td>40</td><td>102</td><td>34</td><td>24</td></tr>
+        <tr><td>L</td><td>42</td><td>104</td><td>37</td><td>25</td></tr>
+        <tr><td>XL</td><td>44</td><td>106</td><td>40</td><td>26</td></tr>
+      </tbody>
+    </table>
+    <p class="size-chart-note" data-ar="جميع القياسات بالسنتيمتر (سم)." data-en="All measurements are in centimeters (cm).">جميع القياسات بالسنتيمتر (سم).</p>
+  </div>
+</div>
 
 <div class="toast-notification" id="toast"></div>
 
