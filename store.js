@@ -417,6 +417,10 @@ function openProductDetails(productId) {
     getElem('selectedSizeName').textContent = '';
   }
 
+  // زر دليل المقاسات: يظهر فقط لمنتجات البنطلونات
+  const sizeChartWrap = getElem('sizeChartWrap');
+  if (sizeChartWrap) sizeChartWrap.hidden = !isPantsProduct(prod);
+
   updateVariantStatus();
   openModal('productModal');
 }
@@ -1144,3 +1148,41 @@ async function loadPromoBanner() {
   } catch (e) { console.error('promo banner:', e); }
 }
 document.addEventListener('DOMContentLoaded', () => applyLanguage(MCL_LANG));
+
+// ============= دليل المقاسات (SIZE CHART) =============
+// يظهر زر دليل المقاسات فقط في منتجات البنطلونات (مثل MCL Sweatpants).
+// الأرقام في الجدول مطابقة تمامًا لصورة دليل المقاسات المرفقة.
+function isPantsProduct(product) {
+  if (!product) return false;
+  const text = getProductSearchText(product);
+  return /pant|trouser|cargo|بنطلون|بانتس|سروال|سيروال|كارغو/.test(text);
+}
+
+function openSizeChart() {
+  const zoomBox = getElem('sizeChartZoom');
+  if (zoomBox) {
+    zoomBox.classList.remove('zoomed');
+    zoomBox.scrollTop = 0;
+    zoomBox.scrollLeft = 0;
+  }
+  openModal('sizeChartModal');
+}
+
+function toggleSizeChartZoom() {
+  const zoomBox = getElem('sizeChartZoom');
+  if (!zoomBox) return;
+  zoomBox.classList.toggle('zoomed');
+  if (!zoomBox.classList.contains('zoomed')) {
+    zoomBox.scrollTop = 0;
+    zoomBox.scrollLeft = 0;
+  }
+}
+
+// إغلاق النوافذ بزر Escape (يشمل نافذة دليل المقاسات)
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape') return;
+  ['sizeChartModal', 'productModal', 'returnPolicyModal', 'checkoutModal', 'successModal'].forEach(id => {
+    const el = getElem(id);
+    if (el && el.classList.contains('active')) closeModal(id);
+  });
+});
