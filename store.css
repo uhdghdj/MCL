@@ -775,3 +775,32 @@ html.winter-drop-active .winter-countdown-colon { font-size: clamp(2rem, 6vw, 3.
     font-size: 0.56rem;
   }
 }
+/* ==========================================================
+   SIZE CHART (MCL SWEATPANTS)
+   ========================================================== */
+.size-chart-link { margin-top: 10px; display: inline-flex; align-items: center; gap: 7px; padding: 2px 0; background: transparent; color: var(--ink); font-size: .74rem; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; transition: color .2s ease; }
+.size-chart-link::before { content: '📏'; font-size: .9rem; }
+.size-chart-link:hover { color: var(--muted); }
+
+.size-chart-dialog { width: min(720px, 100%); padding: 40px 30px 30px; text-align: center; }
+.size-chart-dialog .modal-title { margin: 6px 0 18px; font-size: 1.5rem; }
+.size-chart-zoom { max-height: 56vh; overflow: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--line); background: var(--white); cursor: zoom-in; }
+.size-chart-zoom.zoomed { cursor: zoom-out; }
+.size-chart-zoom img { display: block; width: 100%; height: auto; transition: width .25s var(--ease); }
+.size-chart-zoom.zoomed img { width: 185%; max-width: none; }
+.size-chart-hint { margin: 10px 0 16px; color: var(--muted); font-size: .7rem; }
+.size-chart-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.size-chart-table th, .size-chart-table td { border: 1px solid var(--line); padding: 9px 8px; text-align: center; }
+.size-chart-table thead th { background: var(--ink); color: var(--white); font-family: var(--display); font-size: .68rem; letter-spacing: .06em; font-weight: 800; }
+.size-chart-table tbody tr:nth-child(even) { background: var(--paper-deep); }
+.size-chart-table td:first-child { font-weight: 800; }
+.size-chart-note { margin-top: 12px; color: var(--muted); font-size: .72rem; }
+
+@media (max-width: 680px) {
+  .size-chart-dialog { padding: 34px 16px 22px; }
+  .size-chart-dialog .modal-title { font-size: 1.2rem; }
+  .size-chart-zoom { max-height: 44vh; }
+  .size-chart-zoom.zoomed img { width: 240%; }
+  .size-chart-table { font-size: .7rem; }
+  .size-chart-table th, .size-chart-table td { padding: 7px 5px; }
+}
