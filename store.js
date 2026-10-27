@@ -81,6 +81,29 @@ try {
 
 const persistCart = () => localStorage.setItem('mcl_cart', JSON.stringify(cart));
 
+// Keep saved cart prices aligned with the current product price from Supabase.
+function syncCartPricesWithProducts() {
+  let changed = false;
+  cart.forEach(item => {
+    const product = productsList.find(p => String(p.id) === String(item.product_id));
+    if (!product) return;
+
+    const currentPrice = Number(product.selling_price);
+    if (Number.isFinite(currentPrice) && currentPrice >= 0 && item.unit_price !== currentPrice) {
+      item.unit_price = currentPrice;
+      changed = true;
+    }
+
+    const currentCost = Number(product.cost_price ?? 0);
+    if (Number.isFinite(currentCost) && item.unit_cost !== currentCost) {
+      item.unit_cost = currentCost;
+      changed = true;
+    }
+  });
+
+  if (changed) persistCart();
+}
+
 // 4. دوال مساعدة (Helpers)
 const formatEGP = (amount) => MCL_LANG === 'en'
   ? `${Number(amount || 0).toLocaleString('en-US')} EGP`
@@ -237,6 +260,7 @@ async function fetchProducts() {
       productVariantsMap[v.product_id].push(v);
     });
 
+    syncCartPricesWithProducts();
     renderGrid();
   } catch (err) {
     console.error('فشل في جلب المنتجات من Supabase:', err);
@@ -417,9 +441,9 @@ function openProductDetails(productId) {
     getElem('selectedSizeName').textContent = '';
   }
 
-  // زر دليل المقاسات: يظهر فقط لمنتجات البنطلونات
+  // زر دليل المقاسات يظهر فقط لنوع المنتج المطابق للدليل.
   const sizeChartWrap = getElem('sizeChartWrap');
-  if (sizeChartWrap) sizeChartWrap.hidden = !isPantsProduct(prod);
+  if (sizeChartWrap) sizeChartWrap.hidden = !getProductSizeChartType(prod);
 
   updateVariantStatus();
   openModal('productModal');
@@ -529,7 +553,8 @@ function addToCart() {
     sizeName = activeSize ? activeSize.name : null;
   }
 
-  const unitPrice = variant ? (variant.price ?? prod.selling_price) : prod.selling_price;
+  // The displayed product selling price is canonical; variant.price may be stale.
+  const unitPrice = Number(prod.selling_price);
   const unitCost = variant ? (variant.cost_price ?? prod.cost_price ?? 0) : (prod.cost_price ?? 0);
   const sku = variant ? variant.sku : prod.sku;
   const maxAvailable = variant ? variant.stock_quantity : prod.stock_quantity;
@@ -547,6 +572,9 @@ function addToCart() {
       return;
     }
     cart[existingIndex].quantity = targetQty;
+    cart[existingIndex].unit_price = Number(unitPrice);
+    cart[existingIndex].unit_cost = Number(unitCost);
+    cart[existingIndex].maxAvailable = maxAvailable;
   } else {
     cart.push({
       itemKey,
@@ -874,6 +902,21 @@ function openCheckout() {
 
 async function submitOrder(e) {
   e.preventDefault();
+  const phoneInput = getElem('customerWhatsapp');
+  const phoneValidation = normalizeWhatsAppPhone(phoneInput ? phoneInput.value : '');
+  if (!phoneValidation.valid) {
+    if (phoneInput) {
+      phoneInput.setCustomValidity(tr(
+        'أدخل رقمًا مصريًا صحيحًا مثل 01012345678 أو رقمًا دوليًا يبدأ بـ + أو 00.',
+        'Enter a valid Egyptian mobile number (for example 01012345678) or an international number starting with + or 00.'
+      ));
+      phoneInput.reportValidity();
+      phoneInput.focus();
+    }
+    return;
+  }
+  if (phoneInput) phoneInput.setCustomValidity('');
+
   const btn = getElem('submitOrderBtn');
   btn.disabled = true;
   const submitLabel = btn.querySelector('.button-label');
@@ -913,7 +956,7 @@ async function submitOrder(e) {
 
   const orderPayload = {
     customer_name: form.get('customer_name'),
-    customer_phone: form.get('customer_phone'),
+    customer_phone: phoneValidation.phone,
     customer_email: form.get('customer_email') || null,
     governorate: form.get('governorate'),
     city: form.get('city') || form.get('governorate') || '',
@@ -947,30 +990,6 @@ async function submitOrder(e) {
 
     if (oError) throw oError;
 
-    console.log('📧 جاري استدعاء send-order-email للطلب:', newOrder.id);
-    try {
-      const { data: emailResult, error: emailError } =
-        await supabaseClient.functions.invoke('send-order-email', {
-          body: {
-            order_id: newOrder.id
-          }
-        });
-
-      console.log('📧 نتيجة send-order-email:', {
-        emailResult,
-        emailError
-      });
-
-      if (emailError) {
-        console.error('فشل إرسال إشعار الطلب بالبريد:', emailError);
-      } else {
-        console.log('تم استدعاء send-order-email بنجاح:', emailResult);
-      }
-    } catch (emailInvokeError) {
-      // لا تجعل فشل استدعاء البريد يمنع متابعة إنشاء الطلب.
-      console.error('فشل إرسال إشعار الطلب بالبريد:', emailInvokeError);
-    }
-
     // 2. إدراج عناصر الطلب في جدول order_items (Snapshot للأسعار)
     const itemsPayload = cart.map(item => ({
       order_id: newOrder.id,
@@ -992,7 +1011,32 @@ async function submitOrder(e) {
       .from('order_items')
       .insert(itemsPayload);
 
-    if (itemsError) console.error('خطأ في إدراج عناصر الطلب:', itemsError);
+    if (itemsError) throw itemsError;
+
+    // إشعار البريد اختياري ولا يمنع إظهار نجاح الطلب بعد حفظ بياناته.
+    console.log('📧 جاري استدعاء send-order-email للطلب:', newOrder.id);
+    try {
+      const { data: emailResult, error: emailError } =
+        await supabaseClient.functions.invoke('send-order-email', {
+          body: {
+            order_id: newOrder.id
+          }
+        });
+
+      console.log('📧 نتيجة send-order-email:', {
+        emailResult,
+        emailError
+      });
+
+      if (emailError) {
+        console.error('فشل إرسال إشعار الطلب بالبريد:', emailError);
+      } else {
+        console.log('تم استدعاء send-order-email بنجاح:', emailResult);
+      }
+    } catch (emailInvokeError) {
+      // لا تجعل فشل استدعاء البريد يمنع متابعة الطلب المحفوظ.
+      console.error('فشل إرسال إشعار الطلب بالبريد:', emailInvokeError);
+    }
 
     // 3. خصم المخزون
     for (const item of cart) {
@@ -1150,15 +1194,140 @@ async function loadPromoBanner() {
 document.addEventListener('DOMContentLoaded', () => applyLanguage(MCL_LANG));
 
 // ============= دليل المقاسات (SIZE CHART) =============
-// يظهر زر دليل المقاسات فقط في منتجات البنطلونات (مثل MCL Sweatpants).
-// الأرقام في الجدول مطابقة تمامًا لصورة دليل المقاسات المرفقة.
-function isPantsProduct(product) {
-  if (!product) return false;
-  const text = getProductSearchText(product);
-  return /pant|trouser|cargo|بنطلون|بانتس|سروال|سيروال|كارغو/.test(text);
+const MCL_SIZE_CHARTS = {
+  shirt: {
+    eyebrow: 'MCL SHIRT SIZE GUIDE',
+    title: { ar: 'دليل مقاسات التيشيرتات من MCL', en: 'MCL SHIRT SIZE CHART' },
+    image: 'mcl-size-chart-sweatshirt.jpeg',
+    alt: { ar: 'دليل مقاسات MCL Sweatshirt', en: 'MCL Sweatshirt Size Chart' },
+    headers: [
+      { ar: 'المقاس', en: 'SIZE' },
+      { ar: 'العرض (سم)', en: 'WIDTH (CM)' },
+      { ar: 'الطول (سم)', en: 'LENGTH (CM)' }
+    ],
+    rows: [['S', 59, 68], ['M', 62, 70], ['L', 65, 72], ['XL', 67, 74]]
+  },
+  pants: {
+    eyebrow: 'MCL PANTS SIZE GUIDE',
+    title: { ar: 'دليل مقاسات البناطيل من MCL', en: 'MCL PANTS SIZE CHART' },
+    image: 'mcl-size-chart-sweatpants.jpg',
+    alt: { ar: 'دليل مقاسات MCL Sweatpants', en: 'MCL Sweatpants Size Chart' },
+    headers: [
+      { ar: 'المقاس', en: 'SIZE' },
+      { ar: 'الخصر (سم)', en: 'WAIST (CM)' },
+      { ar: 'الطول (سم)', en: 'LENGTH (CM)' },
+      { ar: 'الفخذ (سم)', en: 'THIGH (CM)' },
+      { ar: 'فتحة الرجل (سم)', en: 'LEG OPENING (CM)' }
+    ],
+    rows: [['M', 40, 102, 34, 24], ['L', 42, 104, 37, 25], ['XL', 44, 106, 40, 26]]
+  }
+};
+
+function getProductSizeChartType(product) {
+  if (!product) return null;
+  const shirtPattern = /(?:sweat[\s_-]*shirts?|\bshirts?|\bt[\s_-]*shirts?|\btees?\b|polo[\s_-]*shirts?|\bpolos?\b|تي[\s_-]*شيرت|تيشيرت|تشيرت|قميص|قمصان|بولو)/i;
+  const pantsPattern = /(?:sweat[\s_-]*pants?|track[\s_-]*pants?|\bpants?\b|\btrousers?\b|\bjoggers?\b|\bjeans?\b|\bchinos?\b|\bleggings?\b|cargo[\s_-]*pants?|بنطلون|بناطيل|سروال|سراويل|جينز|كارغو)/i;
+  const fields = [
+    product.product_type,
+    product.category_name,
+    product.category,
+    product.type,
+    product.collection,
+    product.name
+  ].filter(Boolean);
+
+  for (const field of fields) {
+    const text = String(field);
+    const isShirt = shirtPattern.test(text);
+    const isPants = pantsPattern.test(text);
+    if (isShirt !== isPants) return isPants ? 'pants' : 'shirt';
+  }
+
+  const description = String(product.description || '');
+  const isShirt = shirtPattern.test(description);
+  const isPants = pantsPattern.test(description);
+  if (isShirt !== isPants) return isPants ? 'pants' : 'shirt';
+  return null;
+}
+
+function normalizeWhatsAppPhone(value) {
+  const arabicDigits = '٠١٢٣٤٥٦٧٨٩';
+  const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+  let phone = String(value || '')
+    .replace(/[٠-٩]/g, digit => String(arabicDigits.indexOf(digit)))
+    .replace(/[۰-۹]/g, digit => String(persianDigits.indexOf(digit)))
+    .trim()
+    .replace(/[\s().-]/g, '');
+
+  if (phone.startsWith('00')) phone = `+${phone.slice(2)}`;
+  if (/^01[0125]\d{8}$/.test(phone)) phone = `+20${phone.slice(1)}`;
+  else if (/^20(?:10|11|12|15)\d{8}$/.test(phone)) phone = `+${phone}`;
+
+  const valid = /^\+[1-9]\d{7,14}$/.test(phone);
+  return { valid, phone: valid ? phone : '' };
+}
+
+function validateWhatsAppPhoneField(input) {
+  if (!input) return false;
+  const result = normalizeWhatsAppPhone(input.value);
+  const message = input.value.trim() && !result.valid
+    ? tr(
+        'أدخل رقمًا مصريًا صحيحًا مثل 01012345678 أو رقمًا دوليًا يبدأ بـ + أو 00.',
+        'Enter a valid Egyptian mobile number (for example 01012345678) or an international number starting with + or 00.'
+      )
+    : '';
+  input.setCustomValidity(message);
+  return result.valid || !input.value.trim();
+}
+
+function setSizeChartImageSource(image, filename) {
+  const storeScript = Array.from(document.scripts).find(script => {
+    if (!script.src) return false;
+    try {
+      return new URL(script.src, document.baseURI).pathname.endsWith('/store.js');
+    } catch (error) {
+      return false;
+    }
+  });
+  const candidates = [
+    storeScript ? new URL(filename, storeScript.src).href : null,
+    new URL(filename, document.baseURI).href
+  ].filter((url, index, urls) => url && urls.indexOf(url) === index);
+
+  let candidateIndex = 0;
+  image.onerror = () => {
+    if (candidateIndex + 1 < candidates.length) {
+      candidateIndex += 1;
+      image.src = candidates[candidateIndex];
+      return;
+    }
+    image.onerror = null;
+    console.error('تعذر تحميل صورة دليل المقاسات:', filename);
+  };
+  image.src = candidates[0] || filename;
 }
 
 function openSizeChart() {
+  const chartType = getProductSizeChartType(activeProduct);
+  const chart = MCL_SIZE_CHARTS[chartType];
+  if (!chart) return;
+
+  const title = getElem('sizeChartTitle');
+  const eyebrow = getElem('sizeChartEyebrow');
+  const image = getElem('sizeChartImage');
+  const tableWrap = getElem('sizeChartTable');
+  if (title) title.textContent = tr(chart.title.ar, chart.title.en);
+  if (eyebrow) eyebrow.textContent = chart.eyebrow;
+  if (image) {
+    image.alt = tr(chart.alt.ar, chart.alt.en);
+    setSizeChartImageSource(image, chart.image);
+  }
+  if (tableWrap) {
+    const headers = chart.headers.map(header => `<th>${tr(header.ar, header.en)}</th>`).join('');
+    const rows = chart.rows.map(row => `<tr>${row.map(value => `<td>${value}</td>`).join('')}</tr>`).join('');
+    tableWrap.innerHTML = `<table class="size-chart-table" data-chart-type="${chartType}"><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table>`;
+  }
+
   const zoomBox = getElem('sizeChartZoom');
   if (zoomBox) {
     zoomBox.classList.remove('zoomed');
