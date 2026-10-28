@@ -273,7 +273,7 @@ html.winter-drop-active .winter-countdown-colon { font-size: clamp(2rem, 6vw, 3.
 .checkout-order-summary { padding: 14px; margin: 2px 0 16px; border: 1px solid var(--line); background: var(--paper-deep); }.checkout-order-summary[hidden] { display: none; }
 
 /* Checkout + success */
-.checkout-dialog { width: min(610px, 100%); padding: 40px 33px 33px; }.checkout-dialog .modal-title { font-size: 1.55rem; margin: 8px 0 25px; }.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px; }.form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 13px; }.form-group label { color: var(--muted); font-size: .7rem; font-weight: 600; }.form-group input { height: 43px; padding: 0 12px; border: 1px solid var(--line); border-radius: 0; outline: 0; background: var(--white); color: var(--ink); font-size: .78rem; }.form-group input:focus { border-color: var(--ink); }.payment-method-box { display: flex; align-items: center; gap: 12px; margin: 10px 0 20px; padding: 13px 15px; background: var(--paper-deep); border: 1px solid var(--line); }.method-icon { width: 29px; height: 29px; display: flex; align-items: center; justify-content: center; background: var(--ink); color: var(--lime); font-size: .9rem; }.method-title { font-size: .78rem; font-weight: 800; }.method-desc { color: var(--muted); font-size: .67rem; }.method-check { margin-right: auto; color: var(--success); font-weight: 800; }.success-dialog { width: min(430px, 100%); padding: 50px 32px 38px; text-align: center; }.success-badge { width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; border-radius: 50%; background: var(--lime); color: var(--ink); font-family: Arial, sans-serif; font-size: 2rem; font-weight: 800; }.success-dialog h2 { font-size: 1.7rem; margin: 10px 0; }.success-order-num { margin: 10px 0; font-size: .9rem; }.success-order-num strong { font-family: var(--display); }.success-notice { color: var(--muted); font-size: .78rem; line-height: 1.9; margin-bottom: 25px; }
+.checkout-dialog { width: min(610px, 100%); padding: 40px 33px 33px; }.checkout-dialog .modal-title { font-size: 1.55rem; margin: 8px 0 25px; }.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px; }.form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 13px; }.form-group label { color: var(--muted); font-size: .7rem; font-weight: 600; }.form-group input { height: 43px; padding: 0 12px; border: 1px solid var(--line); border-radius: 0; outline: 0; background: var(--white); color: var(--ink); font-size: .78rem; }.form-group input:focus { border-color: var(--ink); }.form-hint { color: var(--muted); font-size: .68rem; line-height: 1.7; }.whatsapp-confirmation-note { margin: 4px 0 16px; padding: 12px 14px; border: 1px solid var(--line); background: var(--paper-deep); }.whatsapp-confirmation-note strong { display: block; margin-bottom: 4px; font-size: .78rem; }.whatsapp-confirmation-note p { color: var(--muted); font-size: .7rem; line-height: 1.8; }.payment-method-box { display: flex; align-items: center; gap: 12px; margin: 10px 0 20px; padding: 13px 15px; background: var(--paper-deep); border: 1px solid var(--line); }.method-icon { width: 29px; height: 29px; display: flex; align-items: center; justify-content: center; background: var(--ink); color: var(--lime); font-size: .9rem; }.method-title { font-size: .78rem; font-weight: 800; }.method-desc { color: var(--muted); font-size: .67rem; }.method-check { margin-right: auto; color: var(--success); font-weight: 800; }.success-dialog { width: min(430px, 100%); padding: 50px 32px 38px; text-align: center; }.success-badge { width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; border-radius: 50%; background: var(--lime); color: var(--ink); font-family: Arial, sans-serif; font-size: 2rem; font-weight: 800; }.success-dialog h2 { font-size: 1.7rem; margin: 10px 0; }.success-order-num { margin: 10px 0; font-size: .9rem; }.success-order-num strong { font-family: var(--display); }.success-notice { color: var(--muted); font-size: .78rem; line-height: 1.9; margin-bottom: 25px; white-space: pre-line; }
 .policy-dialog { width: min(520px, 100%); padding: 42px 32px 30px; }.policy-dialog .modal-title { margin: 8px 0 18px; font-size: 1.45rem; }.return-policy-list { display: grid; gap: 12px; margin: 0; padding-inline-start: 22px; color: var(--muted); font-size: .84rem; line-height: 1.9; }.return-policy-list li::marker { color: var(--ink); }
 .toast-notification { position: fixed; z-index: 200; bottom: 26px; left: 50%; padding: 11px 20px; border: 1px solid var(--line); background: var(--ink); color: var(--white); opacity: 0; pointer-events: none; transform: translate(-50%, 80px); transition: opacity .3s ease, transform .3s var(--ease); font-size: .76rem; box-shadow: var(--shadow); }.toast-notification.active { opacity: 1; transform: translate(-50%, 0); }
 
@@ -776,7 +776,7 @@ html.winter-drop-active .winter-countdown-colon { font-size: clamp(2rem, 6vw, 3.
   }
 }
 /* ==========================================================
-   SIZE CHART (MCL SWEATPANTS)
+   PRODUCT SIZE CHARTS
    ========================================================== */
 .size-chart-link { margin-top: 10px; display: inline-flex; align-items: center; gap: 7px; padding: 2px 0; background: transparent; color: var(--ink); font-size: .74rem; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; transition: color .2s ease; }
 .size-chart-link::before { content: '📏'; font-size: .9rem; }
@@ -784,12 +784,15 @@ html.winter-drop-active .winter-countdown-colon { font-size: clamp(2rem, 6vw, 3.
 
 .size-chart-dialog { width: min(720px, 100%); padding: 40px 30px 30px; text-align: center; }
 .size-chart-dialog .modal-title { margin: 6px 0 18px; font-size: 1.5rem; }
-.size-chart-zoom { max-height: 56vh; overflow: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--line); background: var(--white); cursor: zoom-in; }
+.size-chart-zoom { max-height: 56vh; overflow: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--line); background: var(--white); cursor: zoom-in; touch-action: pan-x pan-y; }
 .size-chart-zoom.zoomed { cursor: zoom-out; }
 .size-chart-zoom img { display: block; width: 100%; height: auto; transition: width .25s var(--ease); }
 .size-chart-zoom.zoomed img { width: 185%; max-width: none; }
 .size-chart-hint { margin: 10px 0 16px; color: var(--muted); font-size: .7rem; }
+.size-chart-table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .size-chart-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.size-chart-table[data-chart-type="pants"] { min-width: 560px; }
+.size-chart-table[data-chart-type="shirt"] { min-width: 360px; }
 .size-chart-table th, .size-chart-table td { border: 1px solid var(--line); padding: 9px 8px; text-align: center; }
 .size-chart-table thead th { background: var(--ink); color: var(--white); font-family: var(--display); font-size: .68rem; letter-spacing: .06em; font-weight: 800; }
 .size-chart-table tbody tr:nth-child(even) { background: var(--paper-deep); }
@@ -803,4 +806,6 @@ html.winter-drop-active .winter-countdown-colon { font-size: clamp(2rem, 6vw, 3.
   .size-chart-zoom.zoomed img { width: 240%; }
   .size-chart-table { font-size: .7rem; }
   .size-chart-table th, .size-chart-table td { padding: 7px 5px; }
+  .whatsapp-confirmation-note { padding: 10px 12px; }
+  .whatsapp-confirmation-note p { font-size: .68rem; }
 }
