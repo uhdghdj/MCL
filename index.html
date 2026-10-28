@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -17,7 +16,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="store.css">
-  <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body>
 
@@ -248,7 +246,7 @@
       <div class="pm-price-wrap" id="pmPrice"></div>
       <p class="pm-description" id="pmDesc"></p>
       <div class="pm-section" id="pmColorsWrap"><label class="pm-label"><span data-ar="اللون:" data-en="Color:">اللون:</span> <span id="selectedColorName" class="active-label"></span></label><div class="color-options" id="pmColors"></div></div>
-      <div class="pm-section" id="pmSizesWrap"><label class="pm-label"><span data-ar="المقاس:" data-en="Size:">المقاس:</span> <span id="selectedSizeName" class="active-label"></span></label><div class="size-options" id="pmSizes"></div></div><div class="pm-section size-chart-wrap" id="sizeChartWrap" hidden><button type="button" class="size-chart-link" id="sizeChartBtn" onclick="openSizeChart()" data-ar="دليل المقاسات" data-en="Size Chart">دليل المقاسات</button></div>
+      <div class="pm-section" id="pmSizesWrap"><label class="pm-label"><span data-ar="المقاس:" data-en="Size:">المقاس:</span> <span id="selectedSizeName" class="active-label"></span></label><div class="size-options" id="pmSizes"></div></div><div class="pm-section size-chart-wrap" id="sizeChartWrap" hidden><button type="button" class="size-chart-link" id="sizeChartBtn" onclick="openSizeChart()" data-ar="دليل المقاسات | Size Chart" data-en="دليل المقاسات | Size Chart">دليل المقاسات | Size Chart</button></div>
       <div class="pm-section"><label class="pm-label" data-ar="الكمية:" data-en="Quantity:">الكمية:</label><div class="quantity-control"><button type="button" onclick="changeQty(-1)">−</button><span id="pmQty">1</span><button type="button" onclick="changeQty(1)">+</button></div></div>
       <div class="stock-status" id="pmStock"></div>
       <button class="btn btn-primary btn-block" id="addToCartBtn" onclick="addToCart()" data-ar="إضافة إلى السلة" data-en="Add to cart">إضافة إلى السلة</button>
@@ -272,7 +270,7 @@
 <div class="modal" id="checkoutModal" onclick="if(event.target===this)closeModal('checkoutModal')">
   <div class="modal-dialog checkout-dialog"><button class="modal-close" onclick="closeModal('checkoutModal')" aria-label="إغلاق">&times;</button><div class="modal-eyebrow">ONE LAST STEP</div><h2 class="modal-title" data-ar="بيانات الشحن والتوصيل" data-en="Shipping details">بيانات الشحن والتوصيل</h2>
     <form id="checkoutForm" onsubmit="submitOrder(event)">
-      <div class="form-row"><div class="form-group"><label data-ar="الاسم بالكامل *" data-en="Full name *">الاسم بالكامل *</label><input required name="customer_name" placeholder="محمد أحمد"></div><div class="form-group"><label data-ar="رقم الموبايل *" data-en="Mobile number *">رقم الموبايل *</label><input required name="customer_phone" type="tel" placeholder="01012345678"></div></div>
+      <div class="form-row"><div class="form-group"><label data-ar="الاسم بالكامل *" data-en="Full name *">الاسم بالكامل *</label><input required name="customer_name" placeholder="محمد أحمد"></div><div class="form-group"><label for="customerWhatsapp" data-ar="رقم واتساب *" data-en="WhatsApp number *">رقم واتساب *</label><input required id="customerWhatsapp" name="customer_phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="01012345678 أو +201012345678" data-placeholder-ar="01012345678 أو +201012345678" data-placeholder-en="e.g. +201012345678 or +447700900123" aria-describedby="whatsappPhoneHint" oninput="validateWhatsAppPhoneField(this)" onblur="validateWhatsAppPhoneField(this)"><small class="form-hint" id="whatsappPhoneHint" data-ar="يرجى إدخال رقم هاتف مفعل عليه واتساب، لأننا سنتواصل معك من خلاله لتأكيد طلبك." data-en="Enter a phone number that can receive WhatsApp messages; we will contact you there to confirm your order.">يرجى إدخال رقم هاتف مفعل عليه واتساب، لأننا سنتواصل معك من خلاله لتأكيد طلبك.</small></div></div>
       <div class="form-group"><label data-ar="البريد الإلكتروني (اختياري)" data-en="Email (optional)">البريد الإلكتروني (اختياري)</label><input name="customer_email" type="email" placeholder="name@example.com"></div>
       <div class="form-group">
         <label data-ar="المحافظة *" data-en="Governorate *">المحافظة *</label>
@@ -325,39 +323,28 @@
 
       <div class="form-group"><label data-ar="ملاحظات إضافية للتوصيل" data-en="Delivery notes">ملاحظات إضافية للتوصيل</label><input name="address_notes" placeholder="ملاحظات للمندوب..."></div>
       <div class="payment-method-box"><div class="method-icon">✦</div><div><div class="method-title" data-ar="الدفع عند الاستلام" data-en="Cash on delivery">الدفع عند الاستلام</div><div class="method-desc" data-ar="ادفع عند وصوله." data-en="Pay when your order arrives.">ادفع عند وصوله.</div></div><span class="method-check">✓</span></div>
+      <div class="whatsapp-confirmation-note"><strong data-ar="📱 تأكيد الطلب عبر واتساب" data-en="📱 Order confirmation via WhatsApp">📱 تأكيد الطلب عبر واتساب</strong><p data-ar="بعد استلام طلبك، سنراجع تفاصيله ونتواصل معك عبر رسالة واتساب على الرقم المسجل لتأكيد الطلب. يُرجى التأكد من صحة الرقم وإمكانية استقبال الرسائل عليه." data-en="After we receive your order, we will review the details and contact you by WhatsApp message at the number provided to confirm it. Please make sure the number is correct and can receive messages.">بعد استلام طلبك، سنراجع تفاصيله ونتواصل معك عبر رسالة واتساب على الرقم المسجل لتأكيد الطلب. يُرجى التأكد من صحة الرقم وإمكانية استقبال الرسائل عليه.</p></div>
       <button type="submit" class="btn btn-primary btn-block" id="submitOrderBtn" data-ar="تأكيد الطلب الآن" data-en="Confirm order"><span class="button-label">تأكيد الطلب الآن</span> <span>←</span></button>
     </form>
   </div>
 </div>
 
-<div class="modal" id="successModal"><div class="modal-dialog success-dialog"><div class="success-badge">✓</div><div class="modal-eyebrow">ORDER RECEIVED</div><h2 data-ar="طلبك في الطريق!" data-en="Your order is on the way!">طلبك في الطريق!</h2><p class="success-order-num"><span data-ar="رقم الطلب:" data-en="Order number:">رقم الطلب:</span> <strong id="successOrderNo"></strong></p><p class="success-notice" data-ar="تم تسجيل طلبك بنجاح. هيتواصل معك فريق MCL هاتفيًا لتأكيد التفاصيل قبل الشحن." data-en="Your order has been received. The MCL team will call you to confirm the details before shipping.">تم تسجيل طلبك بنجاح. هيتواصل معك فريق MCL هاتفيًا لتأكيد التفاصيل قبل الشحن.</p><button class="btn btn-primary" onclick="finishOrder()" data-ar="متابعة التسوق" data-en="Continue shopping">متابعة التسوق <span>←</span></button></div></div>
+<div class="modal" id="successModal"><div class="modal-dialog success-dialog"><div class="success-badge">✓</div><div class="modal-eyebrow">ORDER RECEIVED</div><h2 data-ar="✅ تم استلام طلبك بنجاح!" data-en="✅ Your order has been received!">✅ تم استلام طلبك بنجاح!</h2><p class="success-order-num"><span data-ar="رقم الطلب:" data-en="Order number:">رقم الطلب:</span> <strong id="successOrderNo"></strong></p><p class="success-notice" data-ar="شكرًا لطلبك من MCL Store.&#10;سيتم مراجعة طلبك والتواصل معك عبر رسالة واتساب على الرقم المسجل لتأكيد الطلب.&#10;يرجى متابعة رسائل واتساب الخاصة بك.&#10;شكرًا لثقتك في MCL Store ❤️" data-en="Thank you for ordering from MCL Store.&#10;We will review your order and contact you by WhatsApp message at the number provided to confirm it.&#10;Please check your WhatsApp messages.&#10;Thank you for trusting MCL Store ❤️">شكرًا لطلبك من MCL Store.
+سيتم مراجعة طلبك والتواصل معك عبر رسالة واتساب على الرقم المسجل لتأكيد الطلب.
+يرجى متابعة رسائل واتساب الخاصة بك.
+شكرًا لثقتك في MCL Store ❤️</p><button class="btn btn-primary" onclick="finishOrder()" data-ar="متابعة التسوق" data-en="Continue shopping">متابعة التسوق <span>←</span></button></div></div>
 
-<!-- Size chart (MCL Sweatpants) -->
+<!-- Product-specific size chart -->
 <div class="modal" id="sizeChartModal" onclick="if(event.target===this)closeModal('sizeChartModal')">
   <div class="modal-dialog size-chart-dialog" role="dialog" aria-modal="true" aria-labelledby="sizeChartTitle">
     <button class="modal-close" onclick="closeModal('sizeChartModal')" aria-label="إغلاق" data-aria-ar="إغلاق" data-aria-en="Close">&times;</button>
-    <div class="modal-eyebrow">MCL SWEATPANTS</div>
-    <h2 class="modal-title" id="sizeChartTitle" data-ar="دليل مقاسات بنطلونات MCL" data-en="MCL SWEATPANTS SIZE CHART">دليل مقاسات بنطلونات MCL</h2>
+    <div class="modal-eyebrow" id="sizeChartEyebrow">MCL SIZE GUIDE</div>
+    <h2 class="modal-title" id="sizeChartTitle"></h2>
     <div class="size-chart-zoom" id="sizeChartZoom" onclick="toggleSizeChartZoom()">
-      <img src="mcl-size-chart-sweatpants.jpg" alt="MCL Sweatpants Size Chart">
+      <img id="sizeChartImage" src="" alt="">
     </div>
     <p class="size-chart-hint" data-ar="اضغط على الصورة للتكبير ومرّر للتنقل، واضغط مرة أخرى للتصغير." data-en="Tap the image to zoom in, scroll or drag to pan, and tap again to zoom out.">اضغط على الصورة للتكبير ومرّر للتنقل، واضغط مرة أخرى للتصغير.</p>
-    <table class="size-chart-table">
-      <thead>
-        <tr>
-          <th data-ar="المقاس" data-en="SIZE">المقاس</th>
-          <th data-ar="الخصر (سم)" data-en="WAIST (CM)">الخصر (سم)</th>
-          <th data-ar="الطول (سم)" data-en="LENGTH (CM)">الطول (سم)</th>
-          <th data-ar="الفخذ (سم)" data-en="THIGH (CM)">الفخذ (سم)</th>
-          <th data-ar="فتحة الرجل (سم)" data-en="LEG OPENING (CM)">فتحة الرجل (سم)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>M</td><td>40</td><td>102</td><td>34</td><td>24</td></tr>
-        <tr><td>L</td><td>42</td><td>104</td><td>37</td><td>25</td></tr>
-        <tr><td>XL</td><td>44</td><td>106</td><td>40</td><td>26</td></tr>
-      </tbody>
-    </table>
+    <div class="size-chart-table-wrap" id="sizeChartTable"></div>
     <p class="size-chart-note" data-ar="جميع القياسات بالسنتيمتر (سم)." data-en="All measurements are in centimeters (cm).">جميع القياسات بالسنتيمتر (سم).</p>
   </div>
 </div>
